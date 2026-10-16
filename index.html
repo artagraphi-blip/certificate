@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>یار درس</title>
+<script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
+<style>
+:root{--bg:#f6f4ff;--card:#fff;--tx:#1d1b2e;--mut:#6b6880;--pri:#6c4cf1;--bd:#e4e0f5;--ok:#1f9d6b;--bad:#d64545;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14121f;--card:#1f1c30;--tx:#f0eefc;--mut:#a6a2c0;--pri:#9a82ff;--bd:#33304d;--ok:#3ccf91;--bad:#ff6b6b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14121f;--card:#1f1c30;--tx:#f0eefc;--mut:#a6a2c0;--pri:#9a82ff;--bd:#33304d;--ok:#3ccf91;--bad:#ff6b6b;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Vazirmatn,Vazir,Tahoma,sans-serif;line-height:1.9}
+.w{max-width:620px;margin:0 auto;padding:16px}
+h1{font-size:24px;margin:6px 0}h1 span{color:var(--pri)}
+.sub{color:var(--mut);margin:0 0 12px;font-size:14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px}
+.card h3{margin:0 0 8px;font-size:17px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;color:var(--tx);cursor:pointer}
+.chip{background:var(--bg);border:1px solid var(--bd);border-radius:99px;padding:6px 16px}
+.chip:active{background:var(--pri);color:#fff}
+.tip{background:color-mix(in srgb,var(--pri) 14%,transparent);border-radius:12px;padding:10px;margin-top:10px;font-size:14px}
+.q{border-top:1px solid var(--bd);padding-top:12px;margin-top:12px}
+.opt{display:block;width:100%;text-align:right;background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:8px 10px;margin-top:6px}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 20%,transparent)}
+.opt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 20%,transparent)}
+.back{background:none;border:0;color:var(--pri);font-weight:600;padding:0;margin-bottom:8px}
+.score{text-align:center;font-weight:700;color:var(--pri)}
+</style>
+</head>
+<body>
+<div class="w" id="app"></div>
+<script>
+const D={
+"ریاضی":[
+{t:"مشتق",e:"مشتق یعنی آهنگ تغییر لحظه‌ای؛ مثلاً سرعت، مشتق مکان نسبت به زمان است. برای x^n مشتق برابر n·x^(n-1) است و مشتق عدد ثابت صفر است.",tip:"مشتق در یک نقطه = شیب خط مماس بر نمودار در همان نقطه.",q:[{q:"مشتق x³ کدام است؟",o:["x²","3x²","3x","x³/3"],a:1},{q:"مشتق عدد ثابت ۷ چیست؟",o:["7","1","0","x"],a:2}]},
+{t:"لگاریتم",e:"لگاریتم عکس توان است: اگر aˣ = b آن‌گاه log_a b = x. مثلاً log₂8 = 3 چون 2³ = 8. لگاریتم حاصل‌ضرب برابر مجموع لگاریتم‌هاست.",tip:"log a + log b = log(ab)",q:[{q:"مقدار log₂16 کدام است؟",o:["2","3","4","8"],a:2},{q:"لگاریتم عدد ۱ در هر پایه‌ی مجاز چیست؟",o:["0","1","10","تعریف‌نشده"],a:0}]}],
+"فیزیک":[
+{t:"قانون دوم نیوتن",e:"نیروی خالص وارد بر جسم برابر جرم ضربدر شتاب است: F = ma. هرچه جرم بیشتر باشد برای شتاب دادن به آن نیروی بیشتری لازم است. یکای نیرو نیوتن (N) است.",tip:"اول نیروها را جمع برداری کن، بعد F = ma را بنویس.",q:[{q:"جسم ۲ کیلوگرمی با نیروی خالص ۱۰ نیوتن، چه شتابی می‌گیرد؟",o:["2","5","10","20"],a:1},{q:"اگر نیروی خالص صفر باشد، جسم…",o:["حتماً ایستاده است","سرعت ثابت دارد (یا ساکن است)","شتاب بی‌نهایت دارد","تندتر می‌شود"],a:1}]},
+{t:"حرکت با سرعت ثابت",e:"در حرکت با سرعت ثابت شتاب صفر است و مکان از رابطه‌ی x = x₀ + vt به دست می‌آید. شیب نمودار مکان–زمان همان سرعت است.",tip:"در نمودار سرعت–زمان، مساحت زیر نمودار برابر جابه‌جایی است.",q:[{q:"با سرعت 20 m/s در 5 ثانیه چند متر جابه‌جا می‌شویم؟",o:["4","25","100","10"],a:2},{q:"شیب نمودار مکان–زمان چیست؟",o:["شتاب","سرعت","جرم","نیرو"],a:1}]}],
+"شیمی":[
+{t:"مول",e:"مول یکای شمارش ذرات است؛ هر مول شامل 6.02×10²³ ذره است. جرم یک مول از هر ماده برابر جرم مولی آن بر حسب گرم است. تعداد مول = جرم ÷ جرم مولی.",tip:"جرم مولی آب (H₂O) تقریباً ۱۸ گرم بر مول است.",q:[{q:"۳۶ گرم آب چند مول است؟",o:["1","2","3","18"],a:1},{q:"عدد آووگادرو کدام است؟",o:["6.02×10²³","3.14","9.8","1.6×10⁻¹⁹"],a:0}]},
+{t:"اسید و باز",e:"محلول‌های اسیدی pH کمتر از ۷ و بازی بیشتر از ۷ دارند و pH برابر ۷ خنثی است. هر یک واحد کاهش pH یعنی غلظت یون H⁺ ده برابر می‌شود.",tip:"pH = −log[H⁺]",q:[{q:"محلولی با pH = 3 چگونه است؟",o:["اسیدی","بازی","خنثی","نمکی"],a:0},{q:"اگر pH از ۵ به ۴ برسد، غلظت H⁺ …",o:["نصف می‌شود","۱۰ برابر می‌شود","۲ برابر می‌شود","ثابت می‌ماند"],a:1}]}],
+"زیست":[
+{t:"همانندسازی DNA",e:"همانندسازی DNA نیمه‌حفاظتی است: هر مولکول جدید یک رشته‌ی قدیمی و یک رشته‌ی نوساز دارد. هلیکاز دو رشته را باز می‌کند و DNA پلیمراز نوکلئوتیدهای مکمل را اضافه می‌کند.",tip:"A با T و G با C جفت می‌شود.",q:[{q:"کدام آنزیم دو رشته‌ی DNA را از هم باز می‌کند؟",o:["هلیکاز","لیپاز","آمیلاز","کاتالاز"],a:0},{q:"همانندسازی DNA چگونه است؟",o:["حفاظتی","نیمه‌حفاظتی","غیرحفاظتی","پراکنده"],a:1}]},
+{t:"فتوسنتز",e:"فتوسنتز در کلروپلاست انجام می‌شود: گیاه با نور، آب و کربن‌دی‌اکسید، گلوکز و اکسیژن می‌سازد. واکنش‌های نوری در تیلاکوئید و چرخه‌ی کالوین در استروما رخ می‌دهد.",tip:"اکسیژنِ آزادشده از شکافت آب می‌آید، نه از CO₂.",q:[{q:"اکسیژن فتوسنتز از کدام ماده می‌آید؟",o:["آب","کربن‌دی‌اکسید","گلوکز","نور"],a:0},{q:"چرخه‌ی کالوین در کجا انجام می‌شود؟",o:["میتوکندری","تیلاکوئید","استروما","هسته"],a:2}]}]
+};
+const app=document.getElementById("app");
+let W=null,name="";
+try{W=window.Eitaa&&window.Eitaa.WebApp;if(W){W.ready&&W.ready();W.expand&&W.expand();const u=W.initDataUnsafe&&W.initDataUnsafe.user;if(u)name=u.first_name||""}}catch(e){}
+function el(tag,cls,txt){const x=document.createElement(tag);if(cls)x.className=cls;if(txt!==undefined)x.textContent=txt;return x}
+function setBack(on){try{if(W&&W.BackButton){on?W.BackButton.show():W.BackButton.hide()}}catch(e){}}
+try{if(W&&W.onEvent)W.onEvent("backButtonClicked",home)}catch(e){}
+
+function home(){
+  app.innerHTML="";setBack(false);
+  const h=el("h1");h.innerHTML="یار <span>درس</span> 📚";app.appendChild(h);
+  app.appendChild(el("p","sub",(name?name+"، ":"")+"درس و مبحث رو انتخاب کن تا توضیح و تست بگیری."));
+  for(const s in D){
+    const c=el("div","card");c.appendChild(el("h3","",s));
+    const ch=el("div","chips");
+    D[s].forEach((tp,i)=>{const b=el("button","chip",tp.t);b.onclick=()=>topic(s,i);ch.appendChild(b)});
+    c.appendChild(ch);app.appendChild(c);
+  }
+}
+function topic(s,i){
+  const tp=D[s][i];app.innerHTML="";setBack(true);
+  const bk=el("button","back","→ بازگشت");bk.onclick=home;app.appendChild(bk);
+  const c=el("div","card");c.appendChild(el("h3","",s+" — "+tp.t));
+  c.appendChild(el("div","",tp.e));c.appendChild(el("div","tip","💡 "+tp.tip));app.appendChild(c);
+  const qc=el("div","card");qc.appendChild(el("h3","","تست خودت رو بسنج"));
+  let right=0,done=0;const sc=el("div","score");
+  tp.q.forEach((it,n)=>{
+    const box=el("div","q");box.appendChild(el("b","",(n+1)+". "+it.q));
+    const bs=[];
+    it.o.forEach((o,j)=>{
+      const b=el("button","opt",o);
+      b.onclick=()=>{
+        bs.forEach((x,k)=>{x.disabled=true;if(k===it.a)x.classList.add("ok")});
+        if(j===it.a)right++;else b.classList.add("bad");
+        if(++done===tp.q.length)sc.textContent="امتیاز تو: "+right+" از "+tp.q.length+(right===tp.q.length?" 🎉":" 💪");
+      };
+      bs.push(b);box.appendChild(b);
+    });
+    qc.appendChild(box);
+  });
+  qc.appendChild(sc);app.appendChild(qc);window.scrollTo(0,0);
+}
+home();
+</script>
+</body>
+</html>
