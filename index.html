@@ -99,8 +99,9 @@ details p{font-size:13px;color:var(--mut);margin:6px 2px}
     </div>
     <div style="margin-top:14px"><img id="pimg" alt="گواهی"></div>
     <button class="go" id="dl" type="button"><span id="dll">دانلود PDF</span></button>
+    <button class="go sec" id="dj" type="button"><span id="djl">ذخیره‌ی تصویر (JPG)</span></button>
     <button class="go sec" id="again" type="button">صدور گواهی دیگر</button>
-    <p class="note">اگر دانلود در ایتا شروع نشد، تصویر گواهی را نگه دار و «ذخیره» را بزن، یا PDF را در مرورگر باز کن.</p>
+    <p class="note">اگر دانلود در ایتا انجام نشد، روی تصویر گواهی انگشتت را نگه دار و «ذخیره» را بزن.</p>
   </section>
 </main>
 
@@ -164,31 +165,40 @@ async function drawCert(name,course,serial){
   g=c.createRadialGradient(0,CH,0,0,CH,900);g.addColorStop(0,"rgba(244,114,150,.14)");g.addColorStop(1,"rgba(244,114,150,0)");c.fillStyle=g;c.fillRect(0,0,CW,CH);
   g=c.createRadialGradient(CW,CH,0,CW,CH,900);g.addColorStop(0,"rgba(240,88,58,.12)");g.addColorStop(1,"rgba(240,88,58,0)");c.fillStyle=g;c.fillRect(0,0,CW,CH);
   /* حلقه‌ی نقطه‌ای دور مدال */
-  for(let i=0;i<44;i++){const a=i/44*6.283,r=185+(i%3)*30;c.fillStyle="rgba(240,150,50,"+(.1+.07*(i%3))+")";c.beginPath();c.arc(CW/2+Math.cos(a)*r,262+Math.sin(a)*r,7+(i%2)*4,0,7);c.fill()}
+  for(let i=0;i<44;i++){const a=i/44*6.283,r=118+(i%3)*22;c.fillStyle="rgba(240,150,50,"+(.1+.07*(i%3))+")";c.beginPath();c.arc(CW/2+Math.cos(a)*r,335+Math.sin(a)*r,7+(i%2)*4,0,7);c.fill()}
   /* قاب */
   let fg=c.createLinearGradient(0,0,CW,CH);fg.addColorStop(0,"#f0583a");fg.addColorStop(.5,"#f4789c");fg.addColorStop(1,"#f0583a");
   c.lineWidth=6;c.strokeStyle=fg;rr(c,70,70,CW-140,CH-140,70);c.stroke();
   c.lineWidth=2;c.strokeStyle="rgba(40,30,40,.25)";rr(c,102,102,CW-204,CH-204,50);c.stroke();
+  /* بسمه تعالی */
+  const gold=c.createLinearGradient(CW/2-300,0,CW/2+300,0);gold.addColorStop(0,"#a8741f");gold.addColorStop(.5,"#e0a843");gold.addColorStop(1,"#a8741f");
+  c.fillStyle=gold;c.font='800 74px "GF",Vazirmatn,Tahoma,sans-serif';c.fillText("بسمه تعالی",CW/2,205);
   /* مدال */
-  const mx=CW/2,my=262;
-  c.fillStyle="#e85a4f";c.beginPath();c.moveTo(mx-70,my+60);c.lineTo(mx-120,my+230);c.lineTo(mx-60,my+195);c.lineTo(mx-25,my+245);c.lineTo(mx+5,my+90);c.closePath();c.fill();
-  c.fillStyle="#ff8a78";c.beginPath();c.moveTo(mx+70,my+60);c.lineTo(mx+120,my+230);c.lineTo(mx+60,my+195);c.lineTo(mx+25,my+245);c.lineTo(mx-5,my+90);c.closePath();c.fill();
-  g=c.createLinearGradient(mx-110,my-110,mx+110,my+110);g.addColorStop(0,"#ffe08a");g.addColorStop(1,"#ee8a22");
-  c.fillStyle=g;c.shadowColor="rgba(240,140,30,.5)";c.shadowBlur=40;c.beginPath();c.arc(mx,my,112,0,7);c.fill();c.shadowBlur=0;
-  c.lineWidth=7;c.strokeStyle="rgba(255,248,220,.95)";c.beginPath();c.arc(mx,my,82,0,7);c.stroke();
-  c.fillStyle="#fff";c.beginPath();for(let i=0;i<10;i++){const a=-1.5708+i*.6283,r=i%2?19:48;c.lineTo(mx+Math.cos(a)*r,my+Math.sin(a)*r)}c.closePath();c.fill();
+  const mx=CW/2,my=335;
+  c.save();c.translate(mx,my);c.scale(.62,.62);
+  c.fillStyle="#e85a4f";c.beginPath();c.moveTo(-70,60);c.lineTo(-120,230);c.lineTo(-60,195);c.lineTo(-25,245);c.lineTo(5,90);c.closePath();c.fill();
+  c.fillStyle="#ff8a78";c.beginPath();c.moveTo(70,60);c.lineTo(120,230);c.lineTo(60,195);c.lineTo(25,245);c.lineTo(-5,90);c.closePath();c.fill();
+  g=c.createLinearGradient(-110,-110,110,110);g.addColorStop(0,"#ffe08a");g.addColorStop(1,"#ee8a22");
+  c.fillStyle=g;c.shadowColor="rgba(240,140,30,.5)";c.shadowBlur=40;c.beginPath();c.arc(0,0,112,0,7);c.fill();c.shadowBlur=0;
+  c.lineWidth=7;c.strokeStyle="rgba(255,248,220,.95)";c.beginPath();c.arc(0,0,82,0,7);c.stroke();
+  c.fillStyle="#fff";c.beginPath();for(let i=0;i<10;i++){const a=-1.5708+i*.6283,r=i%2?19:48;c.lineTo(Math.cos(a)*r,Math.sin(a)*r)}c.closePath();c.fill();
+  c.restore();
   /* عنوان */
-  c.fillStyle="#17151c";fitText(c,"گواهی پایان دوره",1700,168,800);c.fillText("گواهی پایان دوره",CW/2,700);
-  c.fillStyle="#8a8794";c.font='400 46px "GF",Vazirmatn,Tahoma,sans-serif';c.fillText("آرتاگراف · آموزش با موبایل",CW/2,790);
+  c.fillStyle="#17151c";fitText(c,"گواهی پایان دوره",1700,150,800);c.fillText("گواهی پایان دوره",CW/2,640);
   /* بدنه */
-  c.fillStyle="#6c6975";c.font='400 62px "GF",Vazirmatn,Tahoma,sans-serif';c.fillText("گواهی می‌شود",CW/2,895);
-  c.fillStyle="#17151c";fitText(c,name,1800,150,800);c.fillText(name,CW/2,1035);
+  c.fillStyle="#6c6975";c.font='400 58px "GF",Vazirmatn,Tahoma,sans-serif';c.fillText("بدین‌وسیله گواهی می‌شود",CW/2,770);
+  c.fillStyle="#17151c";fitText(c,name,1800,140,800);c.fillText(name,CW/2,910);
   const nw=Math.min(1500,Math.max(600,c.measureText(name).width+160));
-  let ug=c.createLinearGradient(CW/2-nw/2,0,CW/2+nw/2,0);ug.addColorStop(0,"rgba(240,88,58,0)");ug.addColorStop(.5,"#f0583a");ug.addColorStop(1,"rgba(244,120,156,0)");c.fillStyle=ug;c.fillRect(CW/2-nw/2,1070,nw,7);
-  c.fillStyle="#6c6975";c.font='400 62px "GF",Vazirmatn,Tahoma,sans-serif';c.fillText("دوره‌ی آموزشی",CW/2,1160);
+  let ug=c.createLinearGradient(CW/2-nw/2,0,CW/2+nw/2,0);ug.addColorStop(0,"rgba(240,88,58,0)");ug.addColorStop(.5,"#f0583a");ug.addColorStop(1,"rgba(244,120,156,0)");c.fillStyle=ug;c.fillRect(CW/2-nw/2,942,nw,7);
+  c.fillStyle="#6c6975";c.font='400 54px "GF",Vazirmatn,Tahoma,sans-serif';c.fillText("دوره‌ی آموزشی",CW/2,1030);
   const cg=c.createLinearGradient(CW/2-700,0,CW/2+700,0);cg.addColorStop(0,"#f0583a");cg.addColorStop(1,"#f4789c");
-  c.fillStyle=cg;const ct="«"+course+"»";fitText(c,ct,1900,116,800);c.fillStyle=cg;c.fillText(ct,CW/2,1270);
-  c.fillStyle="#17151c";c.font='700 64px "GF",Vazirmatn,Tahoma,sans-serif';c.fillText("را با موفقیت گذرانده است.",CW/2,1360);
+  const ct="«"+course+"»";fitText(c,ct,1900,108,800);c.fillStyle=cg;c.fillText(ct,CW/2,1135);
+  c.fillStyle="#3b3943";c.font='400 50px "GF",Vazirmatn,Tahoma,sans-serif';
+  const para="را در مجموعه‌ی آموزشی آرتاگراف با موفقیت به پایان رسانده و مهارت‌های عملی آن را فرا گرفته است. این گواهی به پاس تلاش و پشتکار ایشان صادر می‌شود و برای ایشان آرزوی پیشرفت و موفقیت روزافزون داریم.";
+  const words=para.split(" "),lines=[];let cur="";
+  for(const w of words){const t=cur?cur+" "+w:w;if(c.measureText(t).width>1650&&cur){lines.push(cur);cur=w}else cur=t}
+  if(cur)lines.push(cur);
+  lines.forEach((ln,i)=>c.fillText(ln,CW/2,1228+i*72));
   /* پاورقی */
   const fy=1565;
   const date=new Intl.DateTimeFormat("fa-IR-u-ca-persian",{year:"numeric",month:"long",day:"numeric"}).format(new Date());
@@ -233,7 +243,7 @@ function makePDF(jpg,w,h){
 /* ---------- رابط ---------- */
 function msg(t,k){const m=$("msg");m.className="msg"+(k?" "+k:"");m.textContent=t||"";if(!t)m.style.display="none";else m.style.display="block"}
 function busy(on){const b=$("go");b.disabled=on;b.classList.toggle("ld",on);$("gol").textContent=on?"در حال بررسی…":"بررسی و صدور گواهی"}
-let pdfUrl=null,imgUrl=null,pdfName="certificate.pdf";
+let imgUrl=null,pdfName="certificate.pdf";
 $("f").addEventListener("submit",async ev=>{
   ev.preventDefault();msg("");
   const lk=lockLeft();if(lk){msg("تلاش‌های ناموفق زیاد بود. "+fa(lk)+" ثانیه‌ی دیگر دوباره امتحان کن.","err");return}
@@ -250,22 +260,33 @@ $("f").addEventListener("submit",async ev=>{
     const serial=await serialOf(h,+ci),cv=await drawCert(name,DB.courses[ci],serial);
     const jb=await new Promise(r=>cv.toBlob(r,"image/jpeg",.92));
     const jpg=new Uint8Array(await jb.arrayBuffer());
-    if(pdfUrl)URL.revokeObjectURL(pdfUrl);if(imgUrl)URL.revokeObjectURL(imgUrl);
-    pdfUrl=URL.createObjectURL(makePDF(jpg,CW,CH));imgUrl=URL.createObjectURL(jb);
+    if(imgUrl)URL.revokeObjectURL(imgUrl);
+    pdfBlob=makePDF(jpg,CW,CH);jpgBlob=jb;imgUrl=URL.createObjectURL(jb);
     pdfName="artagraph-certificate-"+serial+".pdf";
     $("pimg").src=imgUrl;$("rsub").textContent=DB.courses[ci]+" · "+name;
     $("formv").style.display="none";$("resv").classList.add("on");window.scrollTo(0,0);
   }catch(e){msg("بارگذاری فهرست خریداران ناموفق بود. اینترنت را بررسی کن و دوباره امتحان کن.","err")}
   busy(false);
 });
-$("dl").onclick=()=>{
-  if(!pdfUrl)return;
-  try{const a=document.createElement("a");a.href=pdfUrl;a.download=pdfName;document.body.appendChild(a);a.click();a.remove()}catch(e){}
-  $("dll").textContent="اگر دانلود نشد، دوباره بزن یا تصویر را ذخیره کن";setTimeout(()=>{$("dll").textContent="دانلود PDF"},3500);
-};
+function toDataURL(blob){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(blob)})}
+async function saveFile(blob,fname,type){
+  /* ۱) برگه‌ی اشتراک‌گذاری (ذخیره در فایل‌ها یا ارسال در چت) */
+  try{const f=new File([blob],fname,{type});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:"گواهی آرتاگراف"});return true}}catch(e){if(e&&e.name==="AbortError")return true}
+  /* ۲) دانلود با data: (در وب‌ویوی اندروید بیشتر از blob: کار می‌کند) */
+  try{const u=await toDataURL(blob),a=document.createElement("a");a.href=u;a.download=fname;a.rel="noopener";document.body.appendChild(a);a.click();a.remove();return true}catch(e){}
+  /* ۳) blob: */
+  try{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();return true}catch(e){}
+  return false;
+}
+let pdfBlob=null,jpgBlob=null;
+function hint(t){const e=$("dll");e.textContent=t;clearTimeout(hint.h);hint.h=setTimeout(()=>{e.textContent="دانلود PDF"},4200)}
+$("dl").onclick=async()=>{if(!pdfBlob)return;const ok=await saveFile(pdfBlob,pdfName,"application/pdf");hint(ok?"اگر فایل ذخیره نشد، گزینه‌ی تصویر را بزن":"دانلود ممکن نشد؛ تصویر را ذخیره کن")};
+$("dj").onclick=async()=>{if(!jpgBlob)return;const ok=await saveFile(jpgBlob,pdfName.replace(".pdf",".jpg"),"image/jpeg");$("djl").textContent=ok?"اگر ذخیره نشد، روی تصویر بالا نگه دار":"روی تصویر بالا نگه دار و ذخیره را بزن";setTimeout(()=>{$("djl").textContent="ذخیره‌ی تصویر (JPG)"},4200)};
 $("again").onclick=()=>{$("resv").classList.remove("on");$("formv").style.display="";$("nm").value="";$("mb").value="";$("cs").value="";msg("")};
 $("ab").onclick=()=>{const d=$("gd");d.open=true;d.scrollIntoView({behavior:"smooth",block:"center"})};
-loadDB().catch(()=>{});
+const retry=()=>{if(!DB)loadDB().then(()=>msg("")).catch(()=>msg("فهرست دوره‌ها بارگذاری نشد؛ اینترنت را بررسی کن و دوباره روی دوره بزن.","err"))};
+$("cs").addEventListener("focus",retry);$("cs").addEventListener("pointerdown",retry);retry();
+try{const W=window.Eitaa&&window.Eitaa.WebApp;if(W&&W.BackButton){W.onEvent("backButtonClicked",()=>{if($("resv").classList.contains("on"))$("again").click()});new MutationObserver(()=>{$("resv").classList.contains("on")?W.BackButton.show():W.BackButton.hide()}).observe($("resv"),{attributes:true,attributeFilter:["class"]})}}catch(e){}
 window.__gv={drawCert,makePDF};
 })();
 </script>
