@@ -91,6 +91,10 @@ details p{font-size:13px;color:var(--mut);margin:6px 2px}
 .chl{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 0 4px;padding:11px;border-radius:99px;background:var(--grad);color:#fff;text-decoration:none;font-weight:700;font-size:14px}
 .card.inres details{display:none}
 .found .cm{margin:2px 0 12px;color:var(--mut);font-size:14px}
+.price{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 12px;margin:16px 0 0;padding:12px 14px;border-radius:18px;background:var(--card2);border:1px solid var(--bd)}
+.price s{color:var(--mut);font-size:17px;font-weight:600;text-decoration:none;background:linear-gradient(to top left,transparent 45%,#e0453a 46%,#e0453a 54%,transparent 55%);padding:0 4px;direction:rtl;unicode-bidi:isolate;display:inline-block;letter-spacing:0}
+.price b{font-size:21px;font-weight:800}
+.price i{font-style:normal;font-size:12px;font-weight:700;color:#fff;background:var(--grad);padding:3px 10px;border-radius:99px}
 .cdin{direction:ltr;text-align:center;letter-spacing:2px;text-transform:uppercase;font-weight:700}
 .found{display:none;margin-top:14px;padding:14px;border-radius:22px;background:var(--card);border:1px solid var(--bd);box-shadow:0 10px 24px -12px rgba(0,0,0,.25);animation:rise .4s both}
 .found.on{display:block}
@@ -115,8 +119,8 @@ details p{font-size:13px;color:var(--mut);margin:6px 2px}
         <svg width="62" height="62" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd26a"/><stop offset="1" stop-color="#f08a24"/></linearGradient></defs><path d="M20 38 12 58l12-5 6 9 5-18Z" fill="#e85a4f"/><path d="M44 38l8 20-12-5-6 9-5-18Z" fill="#ff7a6a"/><circle cx="32" cy="26" r="20" fill="url(#g1)"/><circle cx="32" cy="26" r="14.5" fill="none" stroke="#fff6d8" stroke-width="2" opacity=".9"/><path d="m32 15 3.3 7 7.5 1-5.5 5.2 1.4 7.5-6.7-3.7-6.7 3.7 1.4-7.5-5.5-5.2 7.5-1Z" fill="#fff"/></svg>
       </div>
       <h1>صدور گواهی دوره</h1>
-      <p class="sub">نام و شماره‌ای که هنگام خرید در آرتاگراف استفاده کردی را بنویس تا خرید دوره بررسی و گواهی PDF صادر شود.</p>
-      <div class="chips"><span class="chip">🔒 بررسی روی گوشی</span><span class="chip">⚡ صدور فوری</span><span class="chip">📄 PDF و تصویر</span></div>
+      <p class="sub">نام و شماره‌ای که هنگام خرید در آرتاگراف استفاده کردی را بنویس تا خرید دوره‌ات بررسی شود؛ بعد از پرداخت آنلاین، گواهی PDF بلافاصله صادر می‌شود.</p>
+      <div class="chips"><span class="chip">🔒 پرداخت امن بانکی</span><span class="chip">⚡ صدور فوری</span><span class="chip">📄 PDF و تصویر</span></div>
     </div>
     <div class="sep"></div>
     <form id="f" autocomplete="off" novalidate>
@@ -127,7 +131,8 @@ details p{font-size:13px;color:var(--mut);margin:6px 2px}
       <label for="cs">دوره</label>
       <div class="fld sel" id="f3"><select id="cs"></select></div>
       <div class="msg" id="msg" role="alert"></div>
-      <button class="go" id="go" type="submit"><span class="spin"></span><span id="gol">بررسی و صدور گواهی</span></button>
+      <div class="price" id="pbox"><b id="pp">۷۵,۰۰۰ تومان</b><s id="po">۱۵۰,۰۰۰</s><i>تخفیف ویژه برای مدت محدود</i></div>
+      <button class="go" id="go" type="submit"><span class="spin"></span><span id="gol">پرداخت و صدور گواهی</span></button>
     </form>
   </section>
 
@@ -176,7 +181,7 @@ details p{font-size:13px;color:var(--mut);margin:6px 2px}
   <details id="gd">
     <summary>راهنما و حریم خصوصی ▾</summary>
     <p>۱. همان شماره‌ای را وارد کن که هنگام خرید دوره در سایت ثبت کرده‌ای.</p>
-    <p>۲. گواهی فقط برای دوره‌هایی صادر می‌شود که سفارش پرداخت‌شده‌شان ثبت شده باشد.</p>
+    <p>۲. صدور گواهی فقط برای دوره‌هایی ممکن است که سفارش پرداخت‌شده‌شان در فروشگاه ثبت شده باشد. هزینه‌ی صدور گواهی با پرداخت آنلاین از درگاه بانکی گرفته می‌شود و پس از پرداخت موفق، گواهی بلافاصله صادر می‌شود. اگر یک‌بار گواهی صادر شده باشد، دریافت دوباره‌ی آن رایگان است.</p>
     <p>۳. شماره‌ی تو روی سرور آرتاگراف بررسی می‌شود و فهرست خریداران جایی عمومی نیست. اطلاعات فقط برای صدور و پیگیری گواهی استفاده می‌شود.</p>
     <p>۴. روی هر گواهی یک کد (مثل ARTA-XXXXXXXX) و یک QR چاپ می‌شود. با تب «پیگیری با کد» یا اسکن QR می‌توانی اعتبار گواهی را ببینی؛ کد فقط با همان نامی که هنگام صدور نوشته‌ای درست تشخیص داده می‌شود.</p>
     <p>۵. اگر خرید کرده‌ای و گواهی صادر نشد، به کانال ما پیام بده:</p>
@@ -206,6 +211,8 @@ async function loadDB(){
   const s=$("cs");s.innerHTML="";const o0=document.createElement("option");o0.value="";o0.textContent="یک دوره انتخاب کن…";s.appendChild(o0);
   SHOW.forEach(i=>{const o=document.createElement("option");o.value=i;o.textContent=DB.courses[i];s.appendChild(o)});
 }
+let PAYON=true;
+const money=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,",").replace(/\d/g,d=>"۰۱۲۳۴۵۶۷۸۹"[d])+" تومان";
 const API="https://api.artag.ir";
 async function api(path,opt){
   const ac=new AbortController(),t=setTimeout(()=>ac.abort(),25000);
@@ -213,6 +220,10 @@ async function api(path,opt){
   catch(e){return{s:0,j:null}}finally{clearTimeout(t)}
 }
 const post=(p,o)=>api(p,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(o)});
+async function loadCfg(){
+  const r=await api("/api/config");
+  if(r.s===200&&r.j){PAYON=!!r.j.pay;$("po").textContent=money(r.j.original).replace(" تومان","");$("pp").textContent=money(r.j.price);$("pbox").style.display=PAYON?"":"none";$("gol").textContent=PAYON?"پرداخت و صدور گواهی":"بررسی و صدور گواهی"}
+}
 const NETMSG="ارتباط با سرور برقرار نشد. اینترنت را بررسی کن و دوباره امتحان کن.";
 const RATEMSG="تلاش‌های ناموفق زیاد بود؛ چند دقیقه بعد دوباره امتحان کن.";
 /* ---------- قفل ساده‌ی تلاش‌های ناموفق ---------- */
@@ -405,7 +416,7 @@ function makePDF(jpg,w,h){
 function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.remove("on"),2800)}
 function setMsg(id,t,k){const m=$(id);m.className="msg"+(k?" "+k:"");m.textContent=t||"";m.style.display=t?"block":"none"}
 const msg=(t,k)=>setMsg("msg",t,k);
-function busy(on){const b=$("go");b.disabled=on;b.classList.toggle("ld",on);$("gol").textContent=on?"در حال بررسی…":"بررسی و صدور گواهی"}
+function busy(on){const b=$("go");b.disabled=on;b.classList.toggle("ld",on);$("gol").textContent=on?"لطفاً صبر کن…":(PAYON?"پرداخت و صدور گواهی":"بررسی و صدور گواهی")}
 let curTab=1;
 function showTab(n){
   if(n!==3)curTab=n;$("formv").style.display=n===1?"":"none";$("findv").style.display=n===2?"":"none";$("histv").style.display=n===3?"":"none";
@@ -469,8 +480,12 @@ async function issue(name,mob,ci){
   busy(true);
   try{
     const r=await post("/api/issue",{name,mobile:mob,course:+ci});
-    if(r.s===200&&r.j){await finish(r.j);if(r.j.nameChanged)toast("این گواهی قبلاً با نام «"+r.j.name+"» صادر شده بود؛ همان نام استفاده شد");busy(false);return}
-    if(r.s===404)msg("برای این شماره، خرید پرداخت‌شده‌ی این دوره پیدا نشد. شماره را همان‌طور که هنگام سفارش ثبت کرده‌ای بنویس یا دوره‌ی درست را انتخاب کن.","err");
+    if(r.s===200&&r.j&&r.j.serial){await finish(r.j);if(r.j.nameChanged)toast("این گواهی قبلاً با نام «"+r.j.name+"» صادر شده بود؛ همان نام استفاده شد");busy(false);return}
+    if(r.s===200&&r.j&&r.j.pay){
+      if(!/^https:\/\/gateway\.zibal\.ir\//.test(r.j.pay)&&!/^https:\/\/[a-z0-9.-]+\.zibal\.ir\//.test(r.j.pay)){msg("آدرس درگاه معتبر نیست.","err");busy(false);return}
+      toast("در حال انتقال به درگاه پرداخت…");setTimeout(()=>{location.href=r.j.pay},400);return}
+    if(r.s===502)msg("اتصال به درگاه پرداخت برقرار نشد؛ چند دقیقه بعد دوباره امتحان کن.","err");
+    else if(r.s===404)msg("برای این شماره، خرید پرداخت‌شده‌ی این دوره پیدا نشد. شماره را همان‌طور که هنگام سفارش ثبت کرده‌ای بنویس یا دوره‌ی درست را انتخاب کن.","err");
     else if(r.s===429)msg(RATEMSG,"err");
     else if(r.s===400)msg("اطلاعات را کامل و درست وارد کن.","err");
     else msg(NETMSG,"err");
@@ -518,7 +533,7 @@ $("dl").onclick=async()=>{
 $("dj").onclick=async()=>{if(!jpgBlob)return;await saveFile(jpgBlob,pdfName.replace(".pdf",".jpg"),"image/jpeg")};
 $("again").onclick=()=>{["nm","mb","cd","fnm"].forEach(i=>$(i).value="");$("cs").value="";$("fres").classList.remove("on");showTab(curTab);tiles()};
 $("ab").onclick=()=>{const d=$("gd");d.open=!d.open;if(d.open)d.scrollIntoView({behavior:"smooth",block:"center"})};
-const retry=()=>Promise.resolve();loadDB();
+const retry=()=>Promise.resolve();loadDB();loadCfg();
 $("cs").addEventListener("focus",retry);$("cs").addEventListener("pointerdown",retry);
 try{const W=window.Eitaa&&window.Eitaa.WebApp;if(W&&W.BackButton){W.onEvent("backButtonClicked",()=>{if($("resv").classList.contains("on"))$("again").click()});new MutationObserver(()=>{$("resv").classList.contains("on")?W.BackButton.show():W.BackButton.hide()}).observe($("resv"),{attributes:true,attributeFilter:["class"]})}}catch(e){}
 /* لینک‌ها: #v=کد&n=نام (اسکن QR) و #c=... (باز کردن در مرورگر)؛ بلافاصله از نوار آدرس پاک می‌شوند */
@@ -526,6 +541,19 @@ try{const W=window.Eitaa&&window.Eitaa.WebApp;if(W&&W.BackButton){W.onEvent("bac
   let q=null;try{if(location.hash.length>2){q=new URLSearchParams(location.hash.slice(1));history.replaceState(null,"",location.pathname+location.search)}}catch(e){}
   await retry();
   if(!q)return;
+  const po=q.get("p");
+  if(po){
+    showTab(1);msg("در حال بررسی پرداخت…");
+    for(let i=0;i<6;i++){
+      const r=await post("/api/pay/status",{order:po});
+      if(r.s===200&&r.j&&r.j.status==="paid"){msg("");await finish(r.j);toast("پرداخت موفق بود ✓");return}
+      if(r.s===200&&r.j&&r.j.status==="failed")break;
+      if(r.s===404)break;
+      await new Promise(x=>setTimeout(x,1500));
+    }
+    msg("پرداختی تأیید نشد. اگر مبلغ از حساب تو کم شده، چند دقیقه صبر کن و دوباره «پرداخت و صدور گواهی» را بزن؛ اگر پرداخت انجام شده باشد، بدون پرداخت دوباره گواهی صادر می‌شود.","err");
+    return;
+  }
   const v=q.get("v")||q.get("c");if(!v)return;
   const n=dec(q.get("n")||"");
   showTab(2);$("cd").value=v;$("fnm").value=n;tiles();
