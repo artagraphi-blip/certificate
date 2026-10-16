@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.eitaa.com data: blob:; script-src 'unsafe-inline' https://developer.eitaa.com; style-src 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://*.eitaa.com; object-src 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.eitaa.com data: blob:; script-src 'unsafe-inline' https://developer.eitaa.com; style-src 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://*.eitaa.com https://api.artag.ir; object-src 'none'; base-uri 'none'">
 <meta name="referrer" content="no-referrer">
 <title>گواهی آرتاگراف</title>
 <script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
@@ -169,19 +169,15 @@ details p{font-size:13px;color:var(--mut);margin:6px 2px}
     </div>
     <div class="pv"><img id="pimg" alt="گواهی"></div>
     <button class="go" id="dl" type="button"><span id="dll">دانلود PDF</span></button>
-    <div class="row2">
-      <button class="go sec" id="dj" type="button">ذخیره‌ی تصویر</button>
-      <button class="go sec" id="ob" type="button">باز کردن در مرورگر</button>
-    </div>
-    <p class="note">اگر PDF یا تصویر در ایتا ذخیره نشد، دکمه‌ی «باز کردن در مرورگر» را بزن؛ گواهی در مرورگر گوشی باز می‌شود و آنجا دانلود می‌شود.</p>
-    <button class="lk" id="cp" type="button">کپی لینک گواهی</button>
+    <button class="go sec" id="dj" type="button">ذخیره‌ی تصویر</button>
+    <p class="note">اگر دانلود PDF شروع نشد، چند ثانیه صبر کن و دوباره بزن؛ فایل در مرورگر گوشی باز می‌شود و ذخیره می‌شود.</p>
     <button class="go sec" id="again" type="button">صدور گواهی دیگر</button>
   </section>
   <details id="gd">
     <summary>راهنما و حریم خصوصی ▾</summary>
     <p>۱. همان شماره‌ای را وارد کن که هنگام خرید دوره در سایت ثبت کرده‌ای.</p>
     <p>۲. گواهی فقط برای دوره‌هایی صادر می‌شود که سفارش پرداخت‌شده‌شان ثبت شده باشد.</p>
-    <p>۳. شماره و نام تو جایی ارسال یا ذخیره نمی‌شود؛ بررسی روی همین گوشی انجام می‌شود و فهرست خریداران فقط به‌صورت رمزگذاری‌شده (هش) در برنامک است.</p>
+    <p>۳. شماره‌ی تو روی سرور آرتاگراف بررسی می‌شود و فهرست خریداران جایی عمومی نیست. اطلاعات فقط برای صدور و پیگیری گواهی استفاده می‌شود.</p>
     <p>۴. روی هر گواهی یک کد (مثل ARTA-XXXXXXXX) و یک QR چاپ می‌شود. با تب «پیگیری با کد» یا اسکن QR می‌توانی اعتبار گواهی را ببینی؛ کد فقط با همان نامی که هنگام صدور نوشته‌ای درست تشخیص داده می‌شود.</p>
     <p>۵. اگر خرید کرده‌ای و گواهی صادر نشد، به کانال ما پیام بده:</p>
     <a class="chl" id="chl" href="https://eitaa.com/schoolarta" data-x>کانال آرتاگراف در ایتا</a>
@@ -206,26 +202,19 @@ let DB=null,courseLoaded=false;
 /* ---------- پایگاه‌داده (فقط هش) ---------- */
 const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 async function loadDB(){
-  let txt=null;
-  try{const r=await fetch("db.json",{cache:"no-cache"});if(!r.ok)throw 0;txt=await r.text();try{localStorage.setItem("gv_db",txt)}catch(e){}}
-  catch(e){try{txt=localStorage.getItem("gv_db")}catch(e2){}}
-  if(!txt)throw new Error("db");
-  const j=JSON.parse(txt);
-  if(j.v!==1||!j.d)throw new Error("db");
-  DB={iter:j.iter,salt:b64(j.salt),courses:j.courses.slice(),n:j.n,d:b64(j.d)};DB.courses[0]="طراح مذهبی";DB.courses[1]="فراطراحی";DB.courses[3]="فراتدوین";
+  DB={courses:[]};DB.courses[0]="طراح مذهبی";DB.courses[1]="فراطراحی";DB.courses[3]="فراتدوین";
   const s=$("cs");s.innerHTML="";const o0=document.createElement("option");o0.value="";o0.textContent="یک دوره انتخاب کن…";s.appendChild(o0);
   SHOW.forEach(i=>{const o=document.createElement("option");o.value=i;o.textContent=DB.courses[i];s.appendChild(o)});
 }
-async function pbk(m){
-  const k=await crypto.subtle.importKey("raw",new TextEncoder().encode(m),"PBKDF2",false,["deriveBits"]);
-  return new Uint8Array(await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",salt:DB.salt,iterations:DB.iter},k,256)).slice(0,12);
+const API="https://api.artag.ir";
+async function api(path,opt){
+  const ac=new AbortController(),t=setTimeout(()=>ac.abort(),25000);
+  try{const r=await fetch(API+path,Object.assign({signal:ac.signal,cache:"no-store"},opt));let j=null;try{j=await r.json()}catch(e){}return{s:r.status,j}}
+  catch(e){return{s:0,j:null}}finally{clearTimeout(t)}
 }
-function lookup(h){
-  const d=DB.d,rec=14;
-  for(let o=0;o<d.length;o+=rec){let ok=true;for(let i=0;i<12;i++){if(d[o+i]!==h[i]){ok=false;break}}if(ok)return(d[o+12]<<8)|d[o+13]}
-  return 0;
-}
-
+const post=(p,o)=>api(p,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(o)});
+const NETMSG="ارتباط با سرور برقرار نشد. اینترنت را بررسی کن و دوباره امتحان کن.";
+const RATEMSG="تلاش‌های ناموفق زیاد بود؛ چند دقیقه بعد دوباره امتحان کن.";
 /* ---------- قفل ساده‌ی تلاش‌های ناموفق ---------- */
 const LK="gv_f";
 function lockLeft(){try{const o=JSON.parse(localStorage.getItem(LK)||"{}");return o.u&&o.u>Date.now()?Math.ceil((o.u-Date.now())/1000):0}catch(e){return 0}}
@@ -447,11 +436,6 @@ const PUB="";/* بعد از وصل کردن دامنه‌ی اختصاصی، آ�
 const base=()=>PUB||location.origin+location.pathname;
 const enc=s=>btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
 const dec=s=>{try{return new TextDecoder().decode(Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")),c=>c.charCodeAt(0)))}catch(e){return""}};
-function findCourse(code,name){
-  const d=DB.d,nc=DB.courses.length;
-  for(let o=0;o+13<d.length;o+=14){const mask=(d[o+12]<<8)|d[o+13];if(!mask)continue;const h=d.subarray(o,o+12);for(const ci of SHOW)if((mask&(1<<ci))&&serialOf(h,ci,name)===code)return ci}
-  return -1;
-}
 const CMAP={O:"0",I:"1",L:"1",U:"V"};
 function normCode(v){
   let x=String(v||"").replace(/[۰-۹٠-٩]/g,c=>DG[c]).toUpperCase().replace(/[\s\-_]/g,"");
@@ -459,61 +443,64 @@ function normCode(v){
   return/^[0-9A-HJKMNP-TV-Z]{8}$/.test(x)?"ARTA-"+x:"";
 }
 function qrLink(serial,date,name){
-  const b=base()+"#v="+serial+"&d="+date;
+  const b=base()+"#v="+serial;
   for(const u of [b+"&n="+enc(name),b]){try{makeQR(u);return u}catch(e){}}
   return b;
 }
-async function finish(name,ci,serial,date){
+let dlUrl="",upP=null;
+function openExt(u){const W=window.Eitaa&&window.Eitaa.WebApp;for(const f of [()=>W.openLink(u,{try_browser:"chrome"}),()=>W.openLink(u),()=>{if(!window.open(u,"_blank"))throw 0},()=>{location.href=u}]){try{f();return true}catch(e){}}return false}
+async function finish(rec){
+  const ci=rec.courseId,name=rec.name,serial=rec.serial,date=rec.date;
   const cv=await drawCert(name,DB.courses[ci],serial,dText(date),qrLink(serial,date,name));
   const jb=await new Promise(r=>cv.toBlob(r,"image/jpeg",.92)),jpg=new Uint8Array(await jb.arrayBuffer());
   if(imgUrl)URL.revokeObjectURL(imgUrl);
   pdfBlob=makePDF(jpg,CW,CH);jpgBlob=jb;imgUrl=URL.createObjectURL(jb);pdfName="artagraph-certificate-"+serial+".pdf";
-  extLink=base()+"#c="+serial+"&d="+date+"&n="+enc(name);
+  dlUrl=rec.dl?API+rec.dl:"";upP=null;
+  if(!dlUrl&&rec.upload){upP=(async()=>{try{const r=await api("/api/pdf/"+serial+"?t="+encodeURIComponent(rec.upload),{method:"PUT",body:pdfBlob});if(r.s===200&&r.j&&r.j.dl)dlUrl=API+r.j.dl}catch(e){}})()}
   hadd(serial,ci,name,date);
   $("pimg").src=imgUrl;$("rsub").textContent=DB.courses[ci]+" · "+name;$("rser").innerHTML='<i class="ck"></i> گواهی معتبر · '+serial;
-  $("formv").style.display="none";$("findv").style.display="none";$("card").classList.add("inres");$("resv").classList.add("on");window.scrollTo(0,0);confetti();
+  $("formv").style.display="none";$("findv").style.display="none";$("histv").style.display="none";$("card").classList.add("inres");$("resv").classList.add("on");window.scrollTo(0,0);confetti();
 }
 async function issue(name,mob,ci){
   msg("");
-  const lk=lockLeft();if(lk){msg("تلاش‌های ناموفق زیاد بود. "+fa(lk)+" ثانیه‌ی دیگر دوباره امتحان کن.","err");return}
   if(name.length<3){msg("نام و نام خانوادگی را کامل بنویس.","err");return}
   if(!mob){msg("شماره‌ی موبایل معتبر نیست (مثل ۰۹۱۲۳۴۵۶۷۸۹).","err");return}
   if(ci===""||ci==null||!SHOW.includes(+ci)){msg("یک دوره انتخاب کن.","err");return}
   busy(true);
   try{
-    if(!DB)await loadDB();
-    const h=await pbk(mob),mask=lookup(h);
-    if(!(mask&(1<<+ci))){fail();msg("برای این شماره، خرید پرداخت‌شده‌ی این دوره پیدا نشد. شماره را همان‌طور که هنگام سفارش ثبت کرده‌ای بنویس یا دوره‌ی درست را انتخاب کن.","err");busy(false);return}
-    okReset();await finish(name,+ci,serialOf(h,+ci,name),jToday());
-  }catch(e){msg("بارگذاری فهرست خریداران ناموفق بود. اینترنت را بررسی کن و دوباره امتحان کن.","err")}
+    const r=await post("/api/issue",{name,mobile:mob,course:+ci});
+    if(r.s===200&&r.j){await finish(r.j);if(r.j.nameChanged)toast("این گواهی قبلاً با نام «"+r.j.name+"» صادر شده بود؛ همان نام استفاده شد");busy(false);return}
+    if(r.s===404)msg("برای این شماره، خرید پرداخت‌شده‌ی این دوره پیدا نشد. شماره را همان‌طور که هنگام سفارش ثبت کرده‌ای بنویس یا دوره‌ی درست را انتخاب کن.","err");
+    else if(r.s===429)msg(RATEMSG,"err");
+    else if(r.s===400)msg("اطلاعات را کامل و درست وارد کن.","err");
+    else msg(NETMSG,"err");
+  }catch(e){msg("ساخت گواهی ناموفق بود؛ دوباره امتحان کن.","err")}
   busy(false);
 }
 $("f").addEventListener("submit",ev=>{ev.preventDefault();issue(cleanName($("nm").value),normMobile($("mb").value),$("cs").value)});
 /* پیگیری با کد + نام */
 let fnd=null;
-async function findCode(code,name,date){
+async function findCode(code,name){
   $("fres").classList.remove("on");setMsg("msg2","");fnd=null;
-  const lk=lockLeft();if(lk){setMsg("msg2","تلاش‌های ناموفق زیاد بود. "+fa(lk)+" ثانیه‌ی دیگر دوباره امتحان کن.","err");return false}
   const cd=normCode(code),nm=cleanName(name);
   if(!cd){setMsg("msg2","کد گواهی را درست وارد کن (مثل ARTA-8F3K2D9Q).","err");return false}
   if(nm.length<3){setMsg("msg2","نام و نام خانوادگی را کامل بنویس.","err");return false}
   const b=$("fgo");b.disabled=true;b.classList.add("ld");$("fgl").textContent="در حال بررسی…";
   try{
-    if(!DB)await loadDB();
-    await new Promise(r=>setTimeout(r,30));
-    const ci=findCourse(cd,nm);
-    if(ci<0){fail();setMsg("msg2","کد و نام با هم مطابقت ندارند. کد را دوباره بررسی کن و نام را دقیقاً همان‌طور که هنگام صدور گواهی نوشتی وارد کن.","err");return false}
-    okReset();fnd={code:cd,ci,name:nm,date:okDate(date)?date:jToday(),given:okDate(date)};
-    $("cd").value=cd;$("fnm").value=nm;
-    $("fcourse").textContent="دوره: "+DB.courses[ci];$("fwho").textContent="صاحب گواهی: "+nm+(fnd.given?" · تاریخ صدور: "+dText(date):"");$("fres").classList.add("on");tiles();
-    return true;
-  }catch(e){setMsg("msg2","بارگذاری فهرست ناموفق بود. اینترنت را بررسی کن و دوباره امتحان کن.","err");return false}
+    const r=await post("/api/find",{code:cd,name:nm});
+    if(r.s===200&&r.j){fnd=r.j;$("cd").value=cd;$("fnm").value=r.j.name;
+      $("fcourse").textContent="دوره: "+r.j.course;$("fwho").textContent="صاحب گواهی: "+r.j.name+" · تاریخ صدور: "+dText(r.j.date);$("fres").classList.add("on");tiles();return true}
+    if(r.s===404)setMsg("msg2","کد و نام با هم مطابقت ندارند. کد را دوباره بررسی کن و نام را دقیقاً همان‌طور که هنگام صدور گواهی نوشتی وارد کن.","err");
+    else if(r.s===429)setMsg("msg2",RATEMSG,"err");
+    else setMsg("msg2",NETMSG,"err");
+    return false;
+  }catch(e){setMsg("msg2",NETMSG,"err");return false}
   finally{b.disabled=false;b.classList.remove("ld");$("fgl").textContent="بررسی گواهی"}
 }
-$("fcode").addEventListener("submit",ev=>{ev.preventDefault();findCode($("cd").value,$("fnm").value,"")});
+$("fcode").addEventListener("submit",ev=>{ev.preventDefault();findCode($("cd").value,$("fnm").value)});
 $("fissue").onclick=async()=>{
   if(!fnd)return;const b=$("fissue");b.disabled=true;b.classList.add("ld");
-  try{await finish(fnd.name,fnd.ci,fnd.code,fnd.date)}catch(e){setMsg("msg2","ساخت گواهی ناموفق بود؛ دوباره امتحان کن.","err")}
+  try{await finish(fnd)}catch(e){setMsg("msg2","ساخت گواهی ناموفق بود؛ دوباره امتحان کن.","err")}
   b.disabled=false;b.classList.remove("ld");
 };
 function toDataURL(blob){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(blob)})}
@@ -523,20 +510,15 @@ async function saveFile(blob,fname,type){
   try{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();return true}catch(e){}
   return false;
 }
-$("dl").onclick=async()=>{if(!pdfBlob)return;await saveFile(pdfBlob,pdfName,"application/pdf");toast("اگر PDF ذخیره نشد، «باز کردن در مرورگر» را بزن")};
-$("dj").onclick=async()=>{if(!jpgBlob)return;await saveFile(jpgBlob,pdfName.replace(".pdf",".jpg"),"image/jpeg");toast("اگر ذخیره نشد، «باز کردن در مرورگر» را بزن")};
-$("ob").onclick=()=>{
-  if(!extLink)return;const W=window.Eitaa&&window.Eitaa.WebApp;
-  for(const f of [()=>W.openLink(extLink,{try_browser:"chrome"}),()=>W.openLink(extLink),()=>{if(!window.open(extLink,"_blank"))throw 0},()=>{location.href=extLink}]){try{f();return}catch(e){}}
-};
-$("cp").onclick=async()=>{
-  if(!extLink)return;
-  try{await navigator.clipboard.writeText(extLink);toast("لینک کپی شد؛ در مرورگر گوشی بچسبان");return}catch(e){}
-  try{const t=document.createElement("textarea");t.value=extLink;document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();toast("لینک کپی شد؛ در مرورگر گوشی بچسبان")}catch(e){toast("کپی ممکن نشد")}
-};
+$("dl").onclick=async()=>{
+  if(!pdfBlob)return;
+  if(!dlUrl&&upP){toast("در حال آماده‌سازی فایل…");await upP}
+  if(dlUrl){openExt(dlUrl);toast("فایل در مرورگر باز می‌شود؛ اگر دانلود نشد دوباره بزن");return}
+  await saveFile(pdfBlob,pdfName,"application/pdf");toast("اتصال به سرور برقرار نشد؛ اگر PDF ذخیره نشد بعداً دوباره امتحان کن")};
+$("dj").onclick=async()=>{if(!jpgBlob)return;await saveFile(jpgBlob,pdfName.replace(".pdf",".jpg"),"image/jpeg")};
 $("again").onclick=()=>{["nm","mb","cd","fnm"].forEach(i=>$(i).value="");$("cs").value="";$("fres").classList.remove("on");showTab(curTab);tiles()};
 $("ab").onclick=()=>{const d=$("gd");d.open=!d.open;if(d.open)d.scrollIntoView({behavior:"smooth",block:"center"})};
-const retry=()=>{if(!DB)return loadDB().then(()=>msg("")).catch(()=>msg("فهرست دوره‌ها بارگذاری نشد؛ اینترنت را بررسی کن و دوباره روی دوره بزن.","err"));return Promise.resolve()};
+const retry=()=>Promise.resolve();loadDB();
 $("cs").addEventListener("focus",retry);$("cs").addEventListener("pointerdown",retry);
 try{const W=window.Eitaa&&window.Eitaa.WebApp;if(W&&W.BackButton){W.onEvent("backButtonClicked",()=>{if($("resv").classList.contains("on"))$("again").click()});new MutationObserver(()=>{$("resv").classList.contains("on")?W.BackButton.show():W.BackButton.hide()}).observe($("resv"),{attributes:true,attributeFilter:["class"]})}}catch(e){}
 /* لینک‌ها: #v=کد&n=نام (اسکن QR) و #c=... (باز کردن در مرورگر)؛ بلافاصله از نوار آدرس پاک می‌شوند */
@@ -548,7 +530,7 @@ try{const W=window.Eitaa&&window.Eitaa.WebApp;if(W&&W.BackButton){W.onEvent("bac
   const n=dec(q.get("n")||"");
   showTab(2);$("cd").value=v;$("fnm").value=n;tiles();
   if(!n){setMsg("msg2","برای بررسی این گواهی، نام صاحب آن را هم وارد کن.","");return}
-  const okf=await findCode(v,n,q.get("d")||"");
+  const okf=await findCode(v,n);
   if(okf&&q.get("c"))$("fissue").click();
 })();
 /* تاریخچه‌ی گواهی‌ها (فقط روی همین دستگاه) */
@@ -565,7 +547,7 @@ function renderHist(){
     const sp=document.createElement("span");sp.textContent=dText(x.d)+" · "+x.s;
     const bx=document.createElement("div");bx.className="hb";
     const g=document.createElement("button");g.type="button";g.textContent="دریافت دوباره";
-    g.onclick=async()=>{g.disabled=true;try{if(!DB)await loadDB();await finish(x.n,x.c,x.s,x.d)}catch(e){toast("ساخت گواهی ناموفق بود")}g.disabled=false};
+    g.onclick=async()=>{g.disabled=true;try{const r=await post("/api/find",{code:x.s,name:x.n});if(r.s===200&&r.j)await finish(r.j);else toast(r.s===0?NETMSG:"این گواهی پیدا نشد")}catch(e){toast("ساخت گواهی ناموفق بود")}g.disabled=false};
     const d=document.createElement("button");d.type="button";d.className="x";d.textContent="حذف";
     d.onclick=()=>{hset(hget().filter(y=>y.s!==x.s));renderHist()};
     bx.append(g,d);li.append(b,sp,bx);ul.appendChild(li);
