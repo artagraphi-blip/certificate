@@ -71,6 +71,15 @@ details p{font-size:13px;color:var(--mut);margin:6px 2px}
 #toast{position:fixed;left:50%;transform:translateX(-50%) translateY(14px);bottom:calc(22px + env(safe-area-inset-bottom,0px));background:var(--tx);color:var(--bg1);border-radius:99px;padding:8px 18px;font-size:13px;opacity:0;transition:.3s;z-index:9;pointer-events:none;max-width:92%;text-align:center}
 #toast.on{opacity:1;transform:translateX(-50%)}
 #cf{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:8}
+
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--card2);border:1px solid var(--bd);border-radius:99px;padding:4px;margin:14px 0 0;position:relative;z-index:2}
+.seg button{border:0;background:none;font:inherit;font-size:14px;color:var(--mut);padding:9px 6px;border-radius:99px;cursor:pointer;transition:.25s}
+.seg button.on{background:var(--btn);color:var(--btx);font-weight:800;box-shadow:0 6px 14px -4px rgba(0,0,0,.4)}
+.card.inres .seg{display:none}
+.cdin{direction:ltr;text-align:center;letter-spacing:2px;text-transform:uppercase;font-weight:700}
+.found{display:none;margin-top:14px;padding:14px;border-radius:22px;background:var(--card);border:1px solid var(--bd);box-shadow:0 10px 24px -12px rgba(0,0,0,.25);animation:rise .4s both}
+.found.on{display:block}
+.found .cn{font-weight:800;font-size:16px;margin:8px 0 0}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important}}
 </style>
 </head>
@@ -81,6 +90,8 @@ details p{font-size:13px;color:var(--mut);margin:6px 2px}
     <button class="pill" id="ab" type="button">ℹ︎ درباره</button>
     <img class="av" alt="آرتاگراف" src="data:image/jpeg;base64,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">
   </div>
+
+  <div class="seg" id="seg"><button type="button" id="tb1" class="on">صدور گواهی</button><button type="button" id="tb2">پیگیری با کد</button></div>
 
   <section id="formv">
     <div class="hero">
@@ -108,8 +119,32 @@ details p{font-size:13px;color:var(--mut);margin:6px 2px}
       <p>۱. همان شماره‌ای را وارد کن که هنگام خرید دوره در سایت ثبت کرده‌ای.</p>
       <p>۲. گواهی فقط برای دوره‌هایی صادر می‌شود که سفارش پرداخت‌شده‌شان ثبت شده باشد.</p>
       <p>۳. شماره و نام تو جایی ارسال یا ذخیره نمی‌شود؛ بررسی روی همین گوشی انجام می‌شود و فهرست خریداران فقط به‌صورت رمزگذاری‌شده (هش) در برنامک است.</p>
-      <p>۴. اگر خرید کرده‌ای و گواهی صادر نشد، در کانال @artagraph پیام بده.</p>
+      <p>۴. روی هر گواهی یک کد و یک QR چاپ می‌شود. بعداً با تب «پیگیری با کد» یا اسکن QR می‌توانی اعتبار گواهی را ببینی و دوباره آن را دریافت کنی.</p>
+      <p>۵. اگر خرید کرده‌ای و گواهی صادر نشد، در کانال @artagraph پیام بده.</p>
     </details>
+  </section>
+
+  <section id="findv" style="display:none">
+    <div class="hero">
+      <div class="medal" style="width:96px;height:96px"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#e0801f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.800-4.800"/><path d="m8 10.500 2 2 3.500-3.800"/></svg></div>
+      <h1>پیگیری گواهی</h1>
+      <p class="sub">کد گواهی (مثل ART-71E943CD) را که روی گواهی‌ات چاپ شده وارد کن تا اعتبارش بررسی شود و دوباره بتوانی آن را دریافت کنی.</p>
+    </div>
+    <div class="sep"></div>
+    <form id="fcode" autocomplete="off" novalidate>
+      <label for="cd">کد گواهی</label>
+      <div class="fld" id="f5"><input id="cd" class="cdin" maxlength="16" placeholder="ART-XXXXXXXX" autocapitalize="characters" enterkeyhint="search"></div>
+      <div class="msg" id="msg2" role="alert"></div>
+      <button class="go" id="fgo" type="submit"><span class="spin"></span><span id="fgl">جستجوی گواهی</span></button>
+    </form>
+    <div class="found" id="fres">
+      <span class="okb">✓ گواهی معتبر است</span>
+      <p class="cn" id="fcourse"></p>
+      <label for="fnm">نام و نام خانوادگی (برای چاپ روی گواهی)</label>
+      <div class="fld" id="f4"><input id="fnm" maxlength="40" placeholder="مثلاً: علی رضایی" enterkeyhint="done"></div>
+      <div class="msg" id="msg3" role="alert"></div>
+      <button class="go" id="fissue" type="button"><span class="spin"></span><span id="fil">دریافت گواهی</span></button>
+    </div>
   </section>
 
   <section class="res" id="resv">
@@ -179,80 +214,154 @@ const CW=2480,CH=1754;
 const logoImg=new Image();const logoReady=new Promise(r=>{logoImg.onload=r;logoImg.onerror=r});logoImg.src=LOGO;
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
 function fitText(c,t,maxW,size,weight){let s=size;do{c.font=weight+" "+s+'px "GF",Vazirmatn,Tahoma,sans-serif';s-=4}while(c.measureText(t).width>maxW&&s>36)}
-async function serialOf(h,idx){const d=new Uint8Array(await crypto.subtle.digest("SHA-256",new Uint8Array([...h,idx])));return"ART-"+Array.from(d.slice(0,4)).map(b=>b.toString(16).padStart(2,"0")).join("").toUpperCase()}
-async function drawCert(name,course,serial){
+const SHA=(()=>{const P=[];for(let n=2;P.length<64;n++)if(P.every(p=>n%p))P.push(n);
+  const K=P.map(p=>Math.floor((Math.cbrt(p)%1)*4294967296)>>>0),H0=P.slice(0,8).map(p=>Math.floor((Math.sqrt(p)%1)*4294967296)>>>0);
+  return m=>{const l=m.length,buf=new Uint8Array(((l+9+63)>>6)*64);buf.set(m);buf[l]=0x80;const dv=new DataView(buf.buffer);dv.setUint32(buf.length-4,(l*8)>>>0);dv.setUint32(buf.length-8,Math.floor(l*8/4294967296));
+    const h=H0.slice(),w=new Uint32Array(64);
+    for(let o=0;o<buf.length;o+=64){for(let i=0;i<16;i++)w[i]=dv.getUint32(o+i*4);
+      for(let i=16;i<64;i++){const a=w[i-15],b=w[i-2];w[i]=(w[i-16]+(((a>>>7)|(a<<25))^((a>>>18)|(a<<14))^(a>>>3))+w[i-7]+(((b>>>17)|(b<<15))^((b>>>19)|(b<<13))^(b>>>10)))>>>0}
+      let a=h[0],b=h[1],c=h[2],d=h[3],e=h[4],f=h[5],g=h[6],hh=h[7];
+      for(let i=0;i<64;i++){const t1=(hh+(((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7)))+((e&f)^(~e&g))+K[i]+w[i])>>>0,t2=((((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10)))+((a&b)^(a&c)^(b&c)))>>>0;hh=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0}
+      h[0]=(h[0]+a)>>>0;h[1]=(h[1]+b)>>>0;h[2]=(h[2]+c)>>>0;h[3]=(h[3]+d)>>>0;h[4]=(h[4]+e)>>>0;h[5]=(h[5]+f)>>>0;h[6]=(h[6]+g)>>>0;h[7]=(h[7]+hh)>>>0}
+    const out=new Uint8Array(32),ov=new DataView(out.buffer);h.forEach((x,i)=>ov.setUint32(i*4,x));return out}})();
+function serialOf(h,idx){const d=SHA(new Uint8Array([...h,idx]));return"ART-"+Array.from(d.slice(0,4)).map(b=>b.toString(16).padStart(2,"0")).join("").toUpperCase()}
+/* QR */
+/* QR encoder: byte mode, ECC level M, versions 1-10 */
+function makeQR(text){
+  const data=Array.from(new TextEncoder().encode(text));
+  /* [totalCW, ecPerBlock, g1blocks, g1data, g2blocks, g2data] */
+  const VT=[null,[26,10,1,16,0,0],[44,16,1,28,0,0],[70,26,1,44,0,0],[100,18,2,32,0,0],[134,24,2,43,0,0],[172,16,4,27,0,0],[196,18,4,31,0,0],[242,22,2,38,2,39],[292,22,3,36,2,37],[346,26,4,43,1,44]];
+  const AP=[null,[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50]];
+  let ver=0;
+  for(let v=1;v<=10;v++){const t=VT[v],dc=t[2]*t[3]+t[4]*t[5],cb=v<10?8:16;if(4+cb+data.length*8<=dc*8){ver=v;break}}
+  if(!ver)throw new Error("qr too long");
+  const t=VT[ver],dcw=t[2]*t[3]+t[4]*t[5],n=17+4*ver;
+  /* bits */
+  const bits=[];const put=(v,l)=>{for(let i=l-1;i>=0;i--)bits.push((v>>i)&1)};
+  put(4,4);put(data.length,ver<10?8:16);data.forEach(b=>put(b,8));
+  const cap=dcw*8;put(0,Math.min(4,cap-bits.length));while(bits.length%8)bits.push(0);
+  const cw=[];for(let i=0;i<bits.length;i+=8){let b=0;for(let j=0;j<8;j++)b=(b<<1)|bits[i+j];cw.push(b)}
+  for(let p=0xEC;cw.length<dcw;p^=0xEC^0x11)cw.push(p);
+  /* GF */
+  const EXP=new Array(512),LOG=new Array(256);let x=1;for(let i=0;i<255;i++){EXP[i]=x;LOG[x]=i;x<<=1;if(x&256)x^=0x11d}for(let i=255;i<512;i++)EXP[i]=EXP[i-255];
+  const mul=(a,b)=>a&&b?EXP[LOG[a]+LOG[b]]:0;
+  const gen=d=>{let g=[1];for(let i=0;i<d;i++){const n2=new Array(g.length+1).fill(0);for(let j=0;j<g.length;j++){n2[j]^=g[j];n2[j+1]^=mul(g[j],EXP[i])}g=n2}return g};
+  const rs=(d,ec)=>{const g=gen(ec),r=new Array(ec).fill(0);for(const b of d){const f=b^r[0];r.shift();r.push(0);if(f)for(let i=0;i<ec;i++)r[i]^=mul(g[i+1],f)}return r};
+  const blocks=[];let o=0;
+  for(let i=0;i<t[2];i++){blocks.push(cw.slice(o,o+t[3]));o+=t[3]}
+  for(let i=0;i<t[4];i++){blocks.push(cw.slice(o,o+t[5]));o+=t[5]}
+  const ecs=blocks.map(b=>rs(b,t[1]));
+  const fin=[];const mx=Math.max(t[3],t[5]);
+  for(let i=0;i<mx;i++)blocks.forEach(b=>{if(i<b.length)fin.push(b[i])});
+  for(let i=0;i<t[1];i++)ecs.forEach(e=>fin.push(e[i]));
+  const fb=[];fin.forEach(b=>{for(let i=7;i>=0;i--)fb.push((b>>i)&1)});
+  /* matrix */
+  const M=[],R=[];for(let i=0;i<n;i++){M.push(new Array(n).fill(0));R.push(new Array(n).fill(false))}
+  const set=(r,c,v)=>{M[r][c]=v?1:0;R[r][c]=true};
+  const finder=(r,c)=>{for(let i=-1;i<=7;i++)for(let j=-1;j<=7;j++){const rr=r+i,cc=c+j;if(rr<0||cc<0||rr>=n||cc>=n)continue;const on=(i>=0&&i<=6&&(j===0||j===6))||(j>=0&&j<=6&&(i===0||i===6))||(i>=2&&i<=4&&j>=2&&j<=4);set(rr,cc,on)}};
+  finder(0,0);finder(0,n-7);finder(n-7,0);
+  for(let i=8;i<n-8;i++){set(6,i,i%2===0);set(i,6,i%2===0)}
+  const ap=AP[ver];
+  for(const r of ap)for(const c of ap){if((r===6&&c===6)||(r===6&&c===ap[ap.length-1])||(c===6&&r===ap[ap.length-1]))continue;for(let i=-2;i<=2;i++)for(let j=-2;j<=2;j++)set(r+i,c+j,Math.max(Math.abs(i),Math.abs(j))!==1)}
+  set(n-8,8,1);
+  for(let i=0;i<9;i++){if(!R[8][i])set(8,i,0);if(!R[i][8])set(i,8,0)}
+  for(let i=0;i<8;i++){if(!R[8][n-1-i])set(8,n-1-i,0);if(!R[n-1-i][8])set(n-1-i,8,0)}
+  if(ver>=7){let v=ver,rem=v;for(let i=0;i<12;i++)rem=(rem<<1)^((rem>>11)*0x1F25);const vi=(ver<<12)|rem;for(let i=0;i<18;i++){const b=(vi>>i)&1,a=Math.floor(i/3),c=i%3+n-11;set(a,c,b);set(c,a,b)}}
+  /* data placement */
+  const base=M.map(r=>r.slice()),res=R.map(r=>r.slice());
+  const place=(mask)=>{
+    const m=base.map(r=>r.slice());let k=0,up=true;
+    for(let c=n-1;c>0;c-=2){if(c===6)c--;
+      for(let i=0;i<n;i++){const r=up?n-1-i:i;
+        for(let d=0;d<2;d++){const cc=c-d;if(res[r][cc])continue;let b=k<fb.length?fb[k]:0;k++;
+          const mk=[(r+cc)%2===0,r%2===0,cc%3===0,(r+cc)%3===0,(Math.floor(r/2)+Math.floor(cc/3))%2===0,(r*cc)%2+(r*cc)%3===0,((r*cc)%2+(r*cc)%3)%2===0,((r+cc)%2+(r*cc)%3)%2===0][mask];
+          m[r][cc]=b^(mk?1:0)}}
+      up=!up}
+    /* format */
+    const fd=(0<<3)|mask;let rem=fd;for(let i=0;i<10;i++)rem=(rem<<1)^((rem>>9)*0x537);const fv=((fd<<10)|rem)^0x5412;
+    const fbit=i=>(fv>>i)&1;
+    for(let i=0;i<=5;i++)m[i][8]=fbit(i);m[7][8]=fbit(6);m[8][8]=fbit(7);m[8][7]=fbit(8);for(let i=9;i<15;i++)m[8][14-i]=fbit(i);
+    for(let i=0;i<8;i++)m[8][n-1-i]=fbit(i);for(let i=8;i<15;i++)m[n-15+i][8]=fbit(i);m[n-8][8]=1;
+    return m;
+  };
+  const pen=m=>{let p=0;
+    for(let pass=0;pass<2;pass++)for(let i=0;i<n;i++){let run=1;for(let j=1;j<n;j++){const a=pass?m[j][i]:m[i][j],b=pass?m[j-1][i]:m[i][j-1];if(a===b){run++;if(run===5)p+=3;else if(run>5)p++}else run=1}}
+    for(let i=0;i<n-1;i++)for(let j=0;j<n-1;j++){const v=m[i][j];if(v===m[i][j+1]&&v===m[i+1][j]&&v===m[i+1][j+1])p+=3}
+    let d=0;for(let i=0;i<n;i++)for(let j=0;j<n;j++)d+=m[i][j];p+=Math.floor(Math.abs(d*20-n*n*10)/(n*n))*10;return p};
+  let best=null,bp=1e9;for(let mk=0;mk<8;mk++){const m=place(mk),p=pen(m);if(p<bp){bp=p;best=m}}
+  return best;
+}
+
+/* تاریخ شمسی */
+const JM=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+function jToday(){const p=new Intl.DateTimeFormat("fa-IR-u-ca-persian-nu-latn",{year:"numeric",month:"numeric",day:"numeric"}).formatToParts(new Date()),g=t=>+p.find(x=>x.type===t).value;return String(g("year")).padStart(4,"0")+String(g("month")).padStart(2,"0")+String(g("day")).padStart(2,"0")}
+const okDate=s=>/^\d{8}$/.test(s)&&+s.slice(4,6)>=1&&+s.slice(4,6)<=12&&+s.slice(6)>=1&&+s.slice(6)<=31&&+s.slice(0,4)>=1300;
+const dText=s=>fa(+s.slice(6))+" "+JM[+s.slice(4,6)-1]+" "+fa(s.slice(0,4));
+function drawQR(c,x,y,size,m){
+  const n=m.length,pad=28,ms=(size-pad*2)/n;
+  c.save();c.shadowColor="rgba(60,30,60,.18)";c.shadowBlur=26;c.shadowOffsetY=8;c.fillStyle="#fff";rr(c,x,y,size,size,34);c.fill();c.restore();
+  c.lineWidth=2;c.strokeStyle="rgba(40,30,60,.14)";rr(c,x,y,size,size,34);c.stroke();
+  c.fillStyle="#1d1830";
+  for(let r=0;r<n;r++)for(let q=0;q<n;q++)if(m[r][q])c.fillRect(x+pad+q*ms,y+pad+r*ms,ms+.7,ms+.7);
+}
+async function drawCert(name,course,serial,dtxt,qrUrl){
   try{await document.fonts.load('800 60px "GF"');await document.fonts.load('400 60px "GF"')}catch(e){}
   await logoReady;
-  const FF='"GF",Vazirmatn,Tahoma,sans-serif',CX=CW/2;
+  const FF='"GF",Vazirmatn,Tahoma,sans-serif',CX=CW/2,F=(w,px)=>w+" "+px+"px "+FF;
+  const INK="#1d1830",MUT="#7a7684",COR="#f0583a";
   const cv=document.createElement("canvas");cv.width=CW;cv.height=CH;const c=cv.getContext("2d");
   c.direction="rtl";c.textAlign="center";c.textBaseline="alphabetic";
-  const F=(w,px)=>w+" "+px+"px "+FF;
-  /* کاغذ */
-  c.fillStyle="#fbfaf6";c.fillRect(0,0,CW,CH);
-  let g=c.createRadialGradient(CX,300,0,CX,300,1000);g.addColorStop(0,"rgba(255,206,120,.38)");g.addColorStop(1,"rgba(255,206,120,0)");c.fillStyle=g;c.fillRect(0,0,CW,CH);
-  g=c.createRadialGradient(0,CH,0,0,CH,900);g.addColorStop(0,"rgba(244,114,150,.13)");g.addColorStop(1,"rgba(244,114,150,0)");c.fillStyle=g;c.fillRect(0,0,CW,CH);
-  g=c.createRadialGradient(CW,CH,0,CW,CH,900);g.addColorStop(0,"rgba(240,88,58,.11)");g.addColorStop(1,"rgba(240,88,58,0)");c.fillStyle=g;c.fillRect(0,0,CW,CH);
-  /* قاب دوخطه */
-  let fg=c.createLinearGradient(0,0,CW,CH);fg.addColorStop(0,"#f0583a");fg.addColorStop(.5,"#f4789c");fg.addColorStop(1,"#f0583a");
-  c.lineWidth=6;c.strokeStyle=fg;rr(c,70,70,CW-140,CH-140,70);c.stroke();
-  c.lineWidth=2;c.strokeStyle="rgba(40,30,40,.22)";rr(c,102,102,CW-204,CH-204,50);c.stroke();
-  /* ۱) بسمه تعالی */
-  const gold=c.createLinearGradient(CX-260,0,CX+260,0);gold.addColorStop(0,"#a8741f");gold.addColorStop(.5,"#e0a843");gold.addColorStop(1,"#a8741f");
-  c.fillStyle=gold;c.font=F(800,60);c.fillText("بسمه تعالی",CX,212);
-  /* ۲) مدال کوچک */
-  c.save();c.translate(CX,338);c.scale(.5,.5);
-  c.fillStyle="#e85a4f";c.beginPath();c.moveTo(-70,60);c.lineTo(-120,230);c.lineTo(-60,195);c.lineTo(-25,245);c.lineTo(5,90);c.closePath();c.fill();
-  c.fillStyle="#ff8a78";c.beginPath();c.moveTo(70,60);c.lineTo(120,230);c.lineTo(60,195);c.lineTo(25,245);c.lineTo(-5,90);c.closePath();c.fill();
-  g=c.createLinearGradient(-110,-110,110,110);g.addColorStop(0,"#ffe08a");g.addColorStop(1,"#ee8a22");
-  c.fillStyle=g;c.shadowColor="rgba(240,140,30,.45)";c.shadowBlur=36;c.beginPath();c.arc(0,0,112,0,7);c.fill();c.shadowBlur=0;
-  c.lineWidth=7;c.strokeStyle="rgba(255,248,220,.95)";c.beginPath();c.arc(0,0,82,0,7);c.stroke();
-  c.fillStyle="#fff";c.beginPath();for(let i=0;i<10;i++){const a=-1.5708+i*.6283,r=i%2?19:48;c.lineTo(Math.cos(a)*r,Math.sin(a)*r)}c.closePath();c.fill();
+  /* قاب رنگی بیرونی */
+  let g=c.createLinearGradient(0,0,CW,CH);g.addColorStop(0,"#f0583a");g.addColorStop(.55,"#f4789c");g.addColorStop(1,"#ff9d4a");c.fillStyle=g;c.fillRect(0,0,CW,CH);
+  /* کارت سفید داخلی با شبکه‌ی محو */
+  const X0=64,Y0=64,W0=CW-128,H0=CH-128;
+  c.save();rr(c,X0,Y0,W0,H0,96);c.clip();
+  g=c.createLinearGradient(0,Y0,0,Y0+H0);g.addColorStop(0,"#ffffff");g.addColorStop(1,"#fff4f1");c.fillStyle=g;c.fillRect(X0,Y0,W0,H0);
+  g=c.createRadialGradient(CX,380,0,CX,380,1000);g.addColorStop(0,"rgba(244,120,156,.13)");g.addColorStop(1,"rgba(244,120,156,0)");c.fillStyle=g;c.fillRect(X0,Y0,W0,H0);
+  c.strokeStyle="rgba(240,88,58,.055)";c.lineWidth=2;for(let x=X0+120;x<X0+W0;x+=120){c.beginPath();c.moveTo(x,Y0);c.lineTo(x,Y0+H0);c.stroke()}for(let y=Y0+120;y<Y0+H0;y+=120){c.beginPath();c.moveTo(X0,y);c.lineTo(X0+W0,y);c.stroke()}
   c.restore();
-  /* ۳) عنوان: متوسط، با خط‌های تزئینی دو طرف */
-  const ty=612;c.fillStyle="#17151c";c.font=F(800,92);c.fillText("گواهی پایان دوره",CX,ty);
-  const tw=c.measureText("گواهی پایان دوره").width/2;
-  [[-1,"rgba(240,88,58,0)","#f0583a"],[1,"rgba(240,88,58,0)","#f0583a"]].forEach(([d])=>{
-    const x1=CX+d*(tw+50),x2=CX+d*(tw+330),lg=c.createLinearGradient(x1,0,x2,0);lg.addColorStop(0,"#f0583a");lg.addColorStop(1,"rgba(240,88,58,0)");
-    c.strokeStyle=lg;c.lineWidth=4;c.lineCap="round";c.beginPath();c.moveTo(x1,ty-30);c.lineTo(x2,ty-30);c.stroke();
-    c.fillStyle="#f0583a";c.beginPath();c.arc(x1,ty-30,8,0,7);c.fill();
-  });
-  c.lineCap="butt";
-  /* ۴) بدین‌وسیله + نام */
-  c.fillStyle="#7a7782";c.font=F(400,44);c.fillText("بدین‌وسیله گواهی می‌شود که",CX,712);
-  c.fillStyle="#17151c";fitText(c,name,1700,118,800);c.fillText(name,CX,848);
-  const nw=Math.min(1500,Math.max(640,c.measureText(name).width+180));
-  let ug=c.createLinearGradient(CX-nw/2,0,CX+nw/2,0);ug.addColorStop(0,"rgba(240,88,58,0)");ug.addColorStop(.5,"#f0583a");ug.addColorStop(1,"rgba(244,120,156,0)");c.fillStyle=ug;c.fillRect(CX-nw/2,888,nw,6);
-  /* ۵) دوره */
-  c.fillStyle="#7a7782";c.font=F(400,42);c.fillText("دوره‌ی آموزشی",CX,972);
-  const cg=c.createLinearGradient(CX-700,0,CX+700,0);cg.addColorStop(0,"#f0583a");cg.addColorStop(1,"#f4789c");
-  const ct="«"+course+"»";fitText(c,ct,1800,84,800);c.fillStyle=cg;c.fillText(ct,CX,1066);
-  /* ۶) متن رسمی: وسط‌چین، حداکثر ۳ خط یکنواخت */
-  c.fillStyle="#4a4753";c.font=F(400,44);
-  const para="را در مجموعه‌ی آموزشی آرتاگراف با موفقیت به پایان رسانده و مهارت‌های عملی آن را فرا گرفته است. این گواهی به پاس تلاش و پشتکار ایشان صادر می‌شود و برای ایشان آرزوی پیشرفت و موفقیت روزافزون داریم.";
+  /* ردیف بالا: برند (راست) | بسمه تعالی (وسط) | آدرس سایت (چپ) */
+  const lx=CW-250,ly=222,LR=58;
+  c.save();c.shadowColor="rgba(240,80,90,.35)";c.shadowBlur=20;c.fillStyle="#fff";c.beginPath();c.arc(lx,ly,LR+8,0,7);c.fill();c.restore();
+  c.save();c.beginPath();c.arc(lx,ly,LR,0,7);c.clip();c.drawImage(logoImg,lx-LR,ly-LR,LR*2,LR*2);c.restore();
+  c.textAlign="right";c.fillStyle=INK;c.font=F(800,54);c.fillText("آرتاگراف",lx-LR-26,ly-2);c.fillStyle=MUT;c.direction="ltr";c.font=F(400,30);c.fillText(SITE,lx-LR-26,ly+40);c.direction="rtl";
+  c.textAlign="left";c.fillStyle=MUT;c.direction="ltr";c.font=F(400,30);c.fillText("Certificate",250,ly-2);c.fillStyle=COR;c.font=F(700,30);c.fillText(serial,250,ly+40);c.direction="rtl";c.textAlign="center";
+  const gold=c.createLinearGradient(CX-220,0,CX+220,0);gold.addColorStop(0,"#a8741f");gold.addColorStop(.5,"#e0a843");gold.addColorStop(1,"#a8741f");
+  c.fillStyle=gold;c.font=F(800,56);c.fillText("بسمه تعالی",CX,ly+16);
+  /* عنوان و گیرنده */
+  c.fillStyle=INK;c.font=F(800,104);c.fillText("گواهی پایان دوره",CX,430);
+  c.fillStyle=MUT;c.font=F(400,40);c.fillText("این گواهی به",CX,516);
+  c.fillStyle=INK;fitText(c,name,1700,100,700);c.fillText(name,CX,636);
+  let ug=c.createLinearGradient(CX-210,0,CX+210,0);ug.addColorStop(0,"rgba(240,88,58,0)");ug.addColorStop(.5,COR);ug.addColorStop(1,"rgba(244,120,156,0)");c.fillStyle=ug;c.fillRect(CX-210,676,420,6);
+  c.fillStyle=MUT;c.font=F(400,40);c.fillText("به پاس گذراندن موفقیت‌آمیز دوره‌ی آموزشی",CX,756);
+  const cg=c.createLinearGradient(CX-700,0,CX+700,0);cg.addColorStop(0,COR);cg.addColorStop(1,"#f4789c");
+  const ct="«"+course+"»";fitText(c,ct,1800,80,800);c.fillStyle=cg;c.fillText(ct,CX,850);
+  c.fillStyle="#5a5668";c.font=F(400,38);
+  const para="اهدا می‌شود. این گواهی به پاس تلاش و پشتکار ایشان در مجموعه‌ی آموزشی آرتاگراف صادر شده و برای ایشان آرزوی پیشرفت و موفقیت روزافزون داریم.";
   const words=para.split(" "),lines=[];let cur="";
-  for(const w of words){const t=cur?cur+" "+w:w;if(c.measureText(t).width>1560&&cur){lines.push(cur);cur=w}else cur=t}
-  if(cur)lines.push(cur);
-  lines.forEach((ln,i)=>c.fillText(ln,CX,1172+i*70));
-  /* ۷) پاورقی در سه ستون هم‌تراز */
-  const fy=1498,L=CX-700,Rr=CX+700;
-  c.strokeStyle="rgba(40,30,40,.18)";c.lineWidth=2;c.beginPath();c.moveTo(CX-860,1388);c.lineTo(CX+860,1388);c.stroke();
-  const date=new Intl.DateTimeFormat("fa-IR-u-ca-persian",{year:"numeric",month:"long",day:"numeric"}).format(new Date());
-  /* راست: تاریخ و شماره */
-  c.fillStyle="#8a8794";c.font=F(400,34);c.fillText("تاریخ صدور",Rr,fy-34);
-  c.fillStyle="#17151c";c.font=F(700,44);c.fillText(date,Rr,fy+22);
-  c.direction="ltr";c.fillStyle="#8a8794";c.font=F(400,30);c.fillText("No. "+serial,Rr,fy+72);c.direction="rtl";
-  /* چپ: امضا */
-  c.fillStyle="#17151c";c.font=F(800,50);c.fillText(SIGNER,L,fy-34);
-  c.fillStyle="#6c6975";c.font=F(400,34);c.fillText(ROLE,L,fy+20);
-  c.direction="ltr";c.fillStyle="#f0583a";c.font=F(700,32);c.fillText(SITE,L,fy+70);c.direction="rtl";
-  /* وسط: مهر لوگو */
-  c.save();c.translate(CX,fy+10);c.rotate(-.12);
-  c.shadowColor="rgba(240,80,90,.4)";c.shadowBlur=22;
-  const R=66;c.fillStyle="#fff";c.beginPath();c.arc(0,0,R+10,0,7);c.fill();c.shadowBlur=0;
-  c.save();c.beginPath();c.arc(0,0,R,0,7);c.clip();c.drawImage(logoImg,-R,-R,R*2,R*2);c.restore();
-  c.lineWidth=4;c.strokeStyle="rgba(240,88,58,.9)";c.beginPath();c.arc(0,0,R+18,0,7);c.stroke();
-  c.lineWidth=2;c.setLineDash([3,10]);c.beginPath();c.arc(0,0,R+30,0,7);c.stroke();c.setLineDash([]);
+  for(const w of words){const t=cur?cur+" "+w:w;if(c.measureText(t).width>1500&&cur){lines.push(cur);cur=w}else cur=t}
+  if(cur)lines.push(cur);lines.forEach((ln,i)=>c.fillText(ln,CX,934+i*62));
+  /* ستون‌ها: تاریخ (راست) | نشان | شناسه (چپ) */
+  const xr=CX+640,xl=CX-640,rowY=1120;
+  const col=(x,label,val,ltr)=>{c.fillStyle=MUT;c.font=F(400,34);c.fillText(label,x,rowY);c.strokeStyle="rgba(40,30,50,.35)";c.lineWidth=3;c.beginPath();c.moveTo(x-250,rowY+30);c.lineTo(x+250,rowY+30);c.stroke();c.fillStyle=INK;c.font=F(700,48);if(ltr)c.direction="ltr";c.fillText(val,x,rowY+108);c.direction="rtl"};
+  col(xr,"تاریخ صدور",dtxt);col(xl,"شناسه‌ی گواهی",serial,true);
+  /* نشان موج‌دار با ستاره */
+  c.save();c.translate(CX,rowY+60);
+  const N=14,R0=150;c.shadowColor="rgba(240,88,90,.4)";c.shadowBlur=36;c.shadowOffsetY=10;
+  g=c.createLinearGradient(-R0,-R0,R0,R0);g.addColorStop(0,"#ff9d4a");g.addColorStop(.5,"#f0583a");g.addColorStop(1,"#f4789c");c.fillStyle=g;
+  c.beginPath();for(let k=0;k<=360;k++){const a=k/360*6.2832,r=R0+9*Math.sin(N*a);c[k?"lineTo":"moveTo"](Math.cos(a)*r,Math.sin(a)*r)}c.closePath();c.fill();c.shadowBlur=0;c.shadowOffsetY=0;
+  c.lineWidth=8;c.strokeStyle="rgba(255,255,255,.95)";c.beginPath();c.arc(0,0,112,0,7);c.stroke();
+  c.fillStyle="#fff";c.beginPath();const SR=58,SI=15;for(let k=0;k<8;k++){const a=-1.5708+k*.7854,r=k%2?SI:SR;c.lineTo(Math.cos(a)*r,Math.sin(a)*r)}c.closePath();c.fill();
   c.restore();
+  /* ردیف پایین: QR (چپ) | توضیح اصالت (وسط) | امضا (راست) */
+  const by=1370;
+  drawQR(c,xl-135,by,270,makeQR(qrUrl));
+  c.fillStyle=MUT;c.font=F(400,30);
+  ["اصالت این گواهی با اسکن کد QR","یا جستجوی شناسه در برنامک آرتاگراف قابل بررسی است."].forEach((t,i)=>c.fillText(t,CX,by+120+i*48));
+  c.strokeStyle="rgba(40,30,50,.35)";c.lineWidth=3;c.beginPath();c.moveTo(xr-250,by+86);c.lineTo(xr+250,by+86);c.stroke();
+  c.fillStyle=INK;c.font=F(800,50);c.fillText(SIGNER,xr,by+156);
+  c.fillStyle=MUT;c.font=F(400,34);c.fillText(ROLE,xr,by+204);
+  c.direction="ltr";c.fillStyle=COR;c.font=F(700,32);c.fillText(SITE,xr,by+250);c.direction="rtl";
   return cv;
 }
 
@@ -276,27 +385,56 @@ function makePDF(jpg,w,h){
 
 /* ---------- رابط ---------- */
 function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.remove("on"),2800)}
-function msg(t,k){const m=$("msg");m.className="msg"+(k?" "+k:"");m.textContent=t||"";m.style.display=t?"block":"none"}
+function setMsg(id,t,k){const m=$(id);m.className="msg"+(k?" "+k:"");m.textContent=t||"";m.style.display=t?"block":"none"}
+const msg=(t,k)=>setMsg("msg",t,k);
 function busy(on){const b=$("go");b.disabled=on;b.classList.toggle("ld",on);$("gol").textContent=on?"در حال بررسی…":"بررسی و صدور گواهی"}
+let curTab=1;
+function showTab(n){
+  curTab=n;$("formv").style.display=n===1?"":"none";$("findv").style.display=n===2?"":"none";
+  $("tb1").classList.toggle("on",n===1);$("tb2").classList.toggle("on",n===2);
+  $("resv").classList.remove("on");$("card").classList.remove("inres");
+  setMsg("msg","");setMsg("msg2","");setMsg("msg3","");
+}
+$("tb1").onclick=()=>showTab(1);$("tb2").onclick=()=>showTab(2);
 function tiles(){
   const ok=[cleanName($("nm").value).length>=3,!!normMobile($("mb").value),$("cs").value!==""];
   ok.forEach((v,i)=>$("f"+(i+1)).classList.toggle("v",v));
+  $("f5").classList.toggle("v",!!normCode($("cd").value));
+  $("f4").classList.toggle("v",cleanName($("fnm").value).length>=3);
 }
-["nm","mb","cs"].forEach(id=>{$(id).addEventListener("input",tiles);$(id).addEventListener("change",tiles)});
-/* کاغذرنگی کوتاه بعد از صدور */
+["nm","mb","cs","cd","fnm"].forEach(id=>{$(id).addEventListener("input",tiles);$(id).addEventListener("change",tiles)});
 function confetti(){
   if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
   const cv=$("cf"),c=cv.getContext("2d"),dpr=Math.min(2,devicePixelRatio||1),W=cv.width=innerWidth*dpr,H=cv.height=innerHeight*dpr;
   const cols=["#f0583a","#f4789c","#ffc445","#3ccf91","#6a7cff"],ps=[];
   for(let i=0;i<90;i++)ps.push({x:W/2+(Math.random()-.5)*W*.3,y:H*.35,vx:(Math.random()-.5)*16*dpr,vy:(-Math.random()*16-4)*dpr,r:Math.random()*6.28,vr:(Math.random()-.5)*.4,w:(6+Math.random()*7)*dpr,h:(4+Math.random()*5)*dpr,c:cols[i%5]});
-  let t0=performance.now();
+  const t0=performance.now();
   (function f(t){const k=(t-t0)/1700;c.clearRect(0,0,W,H);if(k>=1)return;
     ps.forEach(p=>{p.vy+=.5*dpr;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.r+=p.vr;c.save();c.globalAlpha=1-k*k;c.translate(p.x,p.y);c.rotate(p.r);c.fillStyle=p.c;c.fillRect(-p.w/2,-p.h/2,p.w,p.h);c.restore()});
     requestAnimationFrame(f)})(t0);
 }
 let imgUrl=null,pdfName="certificate.pdf",pdfBlob=null,jpgBlob=null,extLink="";
-const b64u=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
-const unb64u=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,"+").replace(/_/g,"/")))));
+const base=()=>location.origin+location.pathname;
+/* کد گواهی: فهرست همه‌ی کدهای معتبر (از روی همان هش‌ها) */
+let CI=null;
+function codeIndex(){
+  if(CI)return CI;CI=new Map();const d=DB.d,nc=DB.courses.length;
+  for(let o=0;o+13<d.length;o+=14){const mask=(d[o+12]<<8)|d[o+13],h=d.subarray(o,o+12);for(let ci=0;ci<nc;ci++)if(mask&(1<<ci))CI.set(serialOf(h,ci),ci)}
+  return CI;
+}
+function normCode(v){
+  const x=String(v||"").replace(/[۰-۹٠-٩]/g,c=>DG[c]).toUpperCase().replace(/[\s\-_]/g,"").replace(/^ART/,"");
+  return/^[0-9A-F]{8}$/.test(x)?"ART-"+x:"";
+}
+async function finish(name,ci,serial,date){
+  const cv=await drawCert(name,DB.courses[ci],serial,dText(date),base()+"#v="+serial+"&d="+date);
+  const jb=await new Promise(r=>cv.toBlob(r,"image/jpeg",.92)),jpg=new Uint8Array(await jb.arrayBuffer());
+  if(imgUrl)URL.revokeObjectURL(imgUrl);
+  pdfBlob=makePDF(jpg,CW,CH);jpgBlob=jb;imgUrl=URL.createObjectURL(jb);pdfName="artagraph-certificate-"+serial+".pdf";
+  extLink=base()+"#c="+serial+"&d="+date+"&n="+encodeURIComponent(name);
+  $("pimg").src=imgUrl;$("rsub").textContent=DB.courses[ci]+" · "+name;$("rser").textContent="✓ گواهی معتبر · "+serial;
+  $("formv").style.display="none";$("findv").style.display="none";$("card").classList.add("inres");$("resv").classList.add("on");window.scrollTo(0,0);confetti();
+}
 async function issue(name,mob,ci){
   msg("");
   const lk=lockLeft();if(lk){msg("تلاش‌های ناموفق زیاد بود. "+fa(lk)+" ثانیه‌ی دیگر دوباره امتحان کن.","err");return}
@@ -308,20 +446,36 @@ async function issue(name,mob,ci){
     if(!DB)await loadDB();
     const h=await pbk(mob),mask=lookup(h);
     if(!(mask&(1<<+ci))){fail();msg("برای این شماره، خرید پرداخت‌شده‌ی این دوره پیدا نشد. شماره را همان‌طور که هنگام سفارش ثبت کرده‌ای بنویس یا دوره‌ی درست را انتخاب کن.","err");busy(false);return}
-    okReset();
-    const serial=await serialOf(h,+ci),cv=await drawCert(name,DB.courses[ci],serial);
-    const jb=await new Promise(r=>cv.toBlob(r,"image/jpeg",.92));
-    const jpg=new Uint8Array(await jb.arrayBuffer());
-    if(imgUrl)URL.revokeObjectURL(imgUrl);
-    pdfBlob=makePDF(jpg,CW,CH);jpgBlob=jb;imgUrl=URL.createObjectURL(jb);
-    pdfName="artagraph-certificate-"+serial+".pdf";
-    extLink=location.origin+location.pathname+"#g="+b64u({n:name,m:mob,c:+ci});
-    $("pimg").src=imgUrl;$("rsub").textContent=DB.courses[ci]+" · "+name;$("rser").textContent="✓ گواهی معتبر · "+serial;
-    $("formv").style.display="none";$("resv").classList.add("on");window.scrollTo(0,0);confetti();
+    okReset();await finish(name,+ci,serialOf(h,+ci),jToday());
   }catch(e){msg("بارگذاری فهرست خریداران ناموفق بود. اینترنت را بررسی کن و دوباره امتحان کن.","err")}
   busy(false);
 }
 $("f").addEventListener("submit",ev=>{ev.preventDefault();issue(cleanName($("nm").value),normMobile($("mb").value),$("cs").value)});
+/* پیگیری با کد */
+let foundCode="",foundCi=-1,foundDate="";
+async function findCode(code,date){
+  $("fres").classList.remove("on");setMsg("msg2","");
+  const lk=lockLeft();if(lk){setMsg("msg2","تلاش‌های ناموفق زیاد بود. "+fa(lk)+" ثانیه‌ی دیگر دوباره امتحان کن.","err");return false}
+  const cd=normCode(code);if(!cd){setMsg("msg2","کد گواهی را درست وارد کن (مثل ART-71E943CD).","err");return false}
+  const b=$("fgo");b.disabled=true;b.classList.add("ld");$("fgl").textContent="در حال جستجو…";
+  try{
+    if(!DB)await loadDB();
+    const ci=codeIndex().get(cd);
+    if(ci==null){fail();setMsg("msg2","گواهی‌ای با این کد پیدا نشد. کد را دوباره بررسی کن.","err");return false}
+    okReset();foundCode=cd;foundCi=ci;foundDate=okDate(date)?date:jToday();$("cd").value=cd;
+    $("fcourse").textContent="دوره: "+DB.courses[ci];$("fres").classList.add("on");tiles();
+    return true;
+  }catch(e){setMsg("msg2","بارگذاری فهرست ناموفق بود. اینترنت را بررسی کن و دوباره امتحان کن.","err");return false}
+  finally{b.disabled=false;b.classList.remove("ld");$("fgl").textContent="جستجوی گواهی"}
+}
+$("fcode").addEventListener("submit",ev=>{ev.preventDefault();findCode($("cd").value,"")});
+$("fissue").onclick=async()=>{
+  setMsg("msg3","");const name=cleanName($("fnm").value);
+  if(name.length<3){setMsg("msg3","نام و نام خانوادگی را کامل بنویس.","err");return}
+  const b=$("fissue");b.disabled=true;b.classList.add("ld");
+  try{await finish(name,foundCi,foundCode,foundDate)}catch(e){setMsg("msg3","ساخت گواهی ناموفق بود؛ دوباره امتحان کن.","err")}
+  b.disabled=false;b.classList.remove("ld");
+};
 function toDataURL(blob){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(blob)})}
 async function saveFile(blob,fname,type){
   try{const f=new File([blob],fname,{type});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:"گواهی آرتاگراف"});return true}}catch(e){if(e&&e.name==="AbortError")return true}
@@ -340,19 +494,24 @@ $("cp").onclick=async()=>{
   try{await navigator.clipboard.writeText(extLink);toast("لینک کپی شد؛ در مرورگر گوشی بچسبان");return}catch(e){}
   try{const t=document.createElement("textarea");t.value=extLink;document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();toast("لینک کپی شد؛ در مرورگر گوشی بچسبان")}catch(e){toast("کپی ممکن نشد")}
 };
-$("again").onclick=()=>{$("resv").classList.remove("on");$("formv").style.display="";$("nm").value="";$("mb").value="";$("cs").value="";msg("");tiles()};
-$("ab").onclick=()=>{const d=$("gd");d.open=true;d.scrollIntoView({behavior:"smooth",block:"center"})};
+$("again").onclick=()=>{["nm","mb","cd","fnm"].forEach(i=>$(i).value="");$("cs").value="";$("fres").classList.remove("on");showTab(curTab);tiles()};
+$("ab").onclick=()=>{showTab(1);const d=$("gd");d.open=true;d.scrollIntoView({behavior:"smooth",block:"center"})};
 const retry=()=>{if(!DB)return loadDB().then(()=>msg("")).catch(()=>msg("فهرست دوره‌ها بارگذاری نشد؛ اینترنت را بررسی کن و دوباره روی دوره بزن.","err"));return Promise.resolve()};
 $("cs").addEventListener("focus",retry);$("cs").addEventListener("pointerdown",retry);
 try{const W=window.Eitaa&&window.Eitaa.WebApp;if(W&&W.BackButton){W.onEvent("backButtonClicked",()=>{if($("resv").classList.contains("on"))$("again").click()});new MutationObserver(()=>{$("resv").classList.contains("on")?W.BackButton.show():W.BackButton.hide()}).observe($("resv"),{attributes:true,attributeFilter:["class"]})}}catch(e){}
-/* باز شدن از لینک مرورگر: اطلاعات در بخش # است، به سرور نمی‌رود و فوراً از نوار آدرس پاک می‌شود */
+/* لینک‌ها: #v=کد (اسکن QR) و #c=کد&n=نام (باز کردن در مرورگر)؛ بلافاصله از نوار آدرس پاک می‌شوند */
 (async()=>{
-  let g=null;try{const m=/^#g=([\w-]+)$/.exec(location.hash);if(m){g=unb64u(m[1]);history.replaceState(null,"",location.pathname+location.search)}}catch(e){}
+  let q=null;try{if(location.hash.length>2){q=new URLSearchParams(location.hash.slice(1));history.replaceState(null,"",location.pathname+location.search)}}catch(e){}
   await retry();
-  if(g&&g.n&&g.m&&g.c!=null){$("nm").value=g.n;$("mb").value=g.m;$("cs").value=String(g.c);tiles();issue(cleanName(g.n),normMobile(g.m),String(g.c))}
+  if(!q)return;
+  const v=q.get("v")||q.get("c");if(!v)return;
+  showTab(2);$("cd").value=v;tiles();
+  const okf=await findCode(v,q.get("d")||"");
+  const n=cleanName(q.get("n")||"");
+  if(okf&&q.get("c")&&n.length>=3){$("fnm").value=n;tiles();$("fissue").click()}
 })();
 tiles();
-window.__gv={drawCert,makePDF};
+window.__gv={drawCert,makePDF,makeQR,SHA,serialOf,jToday};
 })();
 </script>
 </body>
